@@ -1,0 +1,12 @@
+syntax = "proto3";
+package temporal.compound;
+
+import "gogoproto/gogo.proto";
+import "temporal/compound/params.proto";
+
+option go_package = "temporal/x/compound/types";
+
+// GenesisState defines the compound module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
