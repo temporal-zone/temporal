@@ -1,26 +1,60 @@
 syntax = "proto3";
+
 package temporal.compound;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "temporal/compound/params.proto";
+import "temporal/compound/compound_setting.proto";
+import "temporal/compound/validator_setting.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "temporal/x/compound/types";
 
 // Query defines the gRPC querier service.
 service Query {
+  
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/temporal/compound/params";
+  
+  }
+  
+  // Queries a list of CompoundSetting items.
+  rpc CompoundSetting    (QueryGetCompoundSettingRequest) returns (QueryGetCompoundSettingResponse) {
+    option (google.api.http).get = "/temporal/compound/compound_setting/{index123}";
+  
+  }
+  rpc CompoundSettingAll (QueryAllCompoundSettingRequest) returns (QueryAllCompoundSettingResponse) {
+    option (google.api.http).get = "/temporal/compound/compound_setting";
+  
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+  
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+message QueryGetCompoundSettingRequest {
+  string index123 = 1;
+}
+
+message QueryGetCompoundSettingResponse {
+  CompoundSetting compoundSetting = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllCompoundSettingRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllCompoundSettingResponse {
+  repeated CompoundSetting                        compoundSetting = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination      = 2;
+}
+

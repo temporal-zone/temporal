@@ -14,6 +14,14 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
+		CompoundSettingList: []types.CompoundSetting{
+			{
+				Index123: "0",
+			},
+			{
+				Index123: "1",
+			},
+		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -25,5 +33,6 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
 
+	require.ElementsMatch(t, genesisState.CompoundSettingList, got.CompoundSettingList)
 	// this line is used by starport scaffolding # genesis/test/assert
 }
