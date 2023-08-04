@@ -46451,7 +46451,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    index123:
+                    delegator:
                       type: string
                     validatorSetting:
                       type: object
@@ -46479,8 +46479,6 @@ paths:
                     frequency:
                       type: integer
                       format: int32
-                    delegator:
-                      type: string
               pagination:
                 type: object
                 properties:
@@ -46586,7 +46584,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /temporal/compound/compound_setting/{index123}:
+  /temporal/compound/compound_setting/{delegator}:
     get:
       summary: Queries a list of CompoundSetting items.
       operationId: TemporalCompoundCompoundSetting
@@ -46599,7 +46597,7 @@ paths:
               compoundSetting:
                 type: object
                 properties:
-                  index123:
+                  delegator:
                     type: string
                   validatorSetting:
                     type: object
@@ -46627,8 +46625,6 @@ paths:
                   frequency:
                     type: integer
                     format: int32
-                  delegator:
-                    type: string
         default:
           description: An unexpected error response.
           schema:
@@ -46648,7 +46644,7 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: index123
+        - name: delegator
           in: path
           required: true
           type: string
@@ -75432,7 +75428,7 @@ definitions:
   temporal.compound.CompoundSetting:
     type: object
     properties:
-      index123:
+      delegator:
         type: string
       validatorSetting:
         type: object
@@ -75457,8 +75453,6 @@ definitions:
       frequency:
         type: integer
         format: int32
-      delegator:
-        type: string
   temporal.compound.MsgCreateCompoundSettingResponse:
     type: object
   temporal.compound.MsgDeleteCompoundSettingResponse:
@@ -75476,7 +75470,7 @@ definitions:
         items:
           type: object
           properties:
-            index123:
+            delegator:
               type: string
             validatorSetting:
               type: object
@@ -75504,8 +75498,6 @@ definitions:
             frequency:
               type: integer
               format: int32
-            delegator:
-              type: string
       pagination:
         type: object
         properties:
@@ -75538,7 +75530,7 @@ definitions:
       compoundSetting:
         type: object
         properties:
-          index123:
+          delegator:
             type: string
           validatorSetting:
             type: object
@@ -75566,8 +75558,6 @@ definitions:
           frequency:
             type: integer
             format: int32
-          delegator:
-            type: string
   temporal.compound.QueryParamsResponse:
     type: object
     properties:

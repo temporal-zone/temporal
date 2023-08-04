@@ -49,11 +49,9 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		CompoundSettingList: []types.CompoundSetting{
 			{
 				Delegator: sample.AccAddress(),
-				Index123:  "0",
 			},
 			{
 				Delegator: sample.AccAddress(),
-				Index123:  "1",
 			},
 		},
 		// this line is used by starport scaffolding # simapp/module/genesisState

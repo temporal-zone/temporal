@@ -26,15 +26,15 @@ func TestCreateCompoundSetting(t *testing.T) {
 
 	fields := []string{"null", "10token", "111"}
 	tests := []struct {
-		desc       string
-		idIndex123 string
+		desc        string
+		idDelegator string
 
 		args []string
 		err  error
 		code uint32
 	}{
 		{
-			idIndex123: strconv.Itoa(0),
+			idDelegator: strconv.Itoa(0),
 
 			desc: "valid",
 			args: []string{
@@ -49,9 +49,7 @@ func TestCreateCompoundSetting(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			require.NoError(t, net.WaitForNextBlock())
 
-			args := []string{
-				tc.idIndex123,
-			}
+			var args []string
 			args = append(args, fields...)
 			args = append(args, tc.args...)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateCompoundSetting(), args)
@@ -80,31 +78,26 @@ func TestUpdateCompoundSetting(t *testing.T) {
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
 	}
-	args := []string{
-		"0",
-	}
+	var args []string
 	args = append(args, fields...)
 	args = append(args, common...)
 	_, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateCompoundSetting(), args)
 	require.NoError(t, err)
 
 	tests := []struct {
-		desc       string
-		idIndex123 string
+		desc string
 
 		args []string
 		code uint32
 		err  error
 	}{
 		{
-			desc:       "valid",
-			idIndex123: strconv.Itoa(0),
+			desc: "valid",
 
 			args: common,
 		},
 		{
-			desc:       "key not found",
-			idIndex123: strconv.Itoa(100000),
+			desc: "key not found",
 
 			args: common,
 			code: sdkerrors.ErrKeyNotFound.ABCICode(),
@@ -114,11 +107,20 @@ func TestUpdateCompoundSetting(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			require.NoError(t, net.WaitForNextBlock())
 
-			args := []string{
-				tc.idIndex123,
-			}
+			var args []string
 			args = append(args, fields...)
 			args = append(args, tc.args...)
+
+			if tc.desc == "key not found" {
+				out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdDeleteCompoundSetting(), tc.args)
+
+				require.NoError(t, err)
+
+				var resp sdk.TxResponse
+				require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
+				require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, 0))
+			}
+
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdUpdateCompoundSetting(), args)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
@@ -146,31 +148,26 @@ func TestDeleteCompoundSetting(t *testing.T) {
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
 	}
-	args := []string{
-		"0",
-	}
+	var args []string
 	args = append(args, fields...)
 	args = append(args, common...)
 	_, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateCompoundSetting(), args)
 	require.NoError(t, err)
 
 	tests := []struct {
-		desc       string
-		idIndex123 string
+		desc string
 
 		args []string
 		code uint32
 		err  error
 	}{
 		{
-			desc:       "valid",
-			idIndex123: strconv.Itoa(0),
+			desc: "valid",
 
 			args: common,
 		},
 		{
-			desc:       "key not found",
-			idIndex123: strconv.Itoa(100000),
+			desc: "key not found",
 
 			args: common,
 			code: sdkerrors.ErrKeyNotFound.ABCICode(),
@@ -180,11 +177,7 @@ func TestDeleteCompoundSetting(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			require.NoError(t, net.WaitForNextBlock())
 
-			args := []string{
-				tc.idIndex123,
-			}
-			args = append(args, tc.args...)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdDeleteCompoundSetting(), args)
+			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdDeleteCompoundSetting(), tc.args)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 				return

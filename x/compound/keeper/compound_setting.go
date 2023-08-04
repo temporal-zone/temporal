@@ -10,22 +10,14 @@ import (
 func (k Keeper) SetCompoundSetting(ctx sdk.Context, compoundSetting types.CompoundSetting) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CompoundSettingKeyPrefix))
 	b := k.cdc.MustMarshal(&compoundSetting)
-	store.Set(types.CompoundSettingKey(
-		compoundSetting.Index123,
-	), b)
+	store.Set(types.CompoundSettingKey(compoundSetting.Delegator), b)
 }
 
 // GetCompoundSetting returns a compoundSetting from its index
-func (k Keeper) GetCompoundSetting(
-	ctx sdk.Context,
-	index123 string,
-
-) (val types.CompoundSetting, found bool) {
+func (k Keeper) GetCompoundSetting(ctx sdk.Context, delegator string) (val types.CompoundSetting, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CompoundSettingKeyPrefix))
 
-	b := store.Get(types.CompoundSettingKey(
-		index123,
-	))
+	b := store.Get(types.CompoundSettingKey(delegator))
 	if b == nil {
 		return val, false
 	}
@@ -35,15 +27,9 @@ func (k Keeper) GetCompoundSetting(
 }
 
 // RemoveCompoundSetting removes a compoundSetting from the store
-func (k Keeper) RemoveCompoundSetting(
-	ctx sdk.Context,
-	index123 string,
-
-) {
+func (k Keeper) RemoveCompoundSetting(ctx sdk.Context, delegator string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.CompoundSettingKeyPrefix))
-	store.Delete(types.CompoundSettingKey(
-		index123,
-	))
+	store.Delete(types.CompoundSettingKey(delegator))
 }
 
 // GetAllCompoundSetting returns all compoundSetting

@@ -27,7 +27,7 @@ func networkWithCompoundSettingObjects(t *testing.T, n int) (*network.Network, [
 	state := types.GenesisState{}
 	for i := 0; i < n; i++ {
 		compoundSetting := types.CompoundSetting{
-			Index123: strconv.Itoa(i),
+			Delegator: strconv.Itoa(i),
 		}
 		nullify.Fill(&compoundSetting)
 		state.CompoundSettingList = append(state.CompoundSettingList, compoundSetting)
@@ -46,23 +46,23 @@ func TestShowCompoundSetting(t *testing.T) {
 		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 	tests := []struct {
-		desc       string
-		idIndex123 string
+		desc        string
+		idDelegator string
 
 		args []string
 		err  error
 		obj  types.CompoundSetting
 	}{
 		{
-			desc:       "found",
-			idIndex123: objs[0].Index123,
+			desc:        "found",
+			idDelegator: objs[0].Delegator,
 
 			args: common,
 			obj:  objs[0],
 		},
 		{
-			desc:       "not found",
-			idIndex123: strconv.Itoa(100000),
+			desc:        "not found",
+			idDelegator: strconv.Itoa(100000),
 
 			args: common,
 			err:  status.Error(codes.NotFound, "not found"),
@@ -71,7 +71,7 @@ func TestShowCompoundSetting(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
 			args := []string{
-				tc.idIndex123,
+				tc.idDelegator,
 			}
 			args = append(args, tc.args...)
 			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowCompoundSetting(), args)

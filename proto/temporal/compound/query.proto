@@ -23,7 +23,7 @@ service Query {
   
   // Queries a list of CompoundSetting items.
   rpc CompoundSetting    (QueryGetCompoundSettingRequest) returns (QueryGetCompoundSettingResponse) {
-    option (google.api.http).get = "/temporal/compound/compound_setting/{index123}";
+    option (google.api.http).get = "/temporal/compound/compound_setting/{delegator}";
   
   }
   rpc CompoundSettingAll (QueryAllCompoundSettingRequest) returns (QueryAllCompoundSettingResponse) {
@@ -42,7 +42,7 @@ message QueryParamsResponse {
 }
 
 message QueryGetCompoundSettingRequest {
-  string index123 = 1;
+  string delegator = 1;
 }
 
 message QueryGetCompoundSettingResponse {

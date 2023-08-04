@@ -23,7 +23,7 @@ func (gs GenesisState) Validate() error {
 	compoundSettingIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.CompoundSettingList {
-		index := string(CompoundSettingKey(elem.Index123))
+		index := string(CompoundSettingKey(elem.Delegator))
 		if _, ok := compoundSettingIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for compoundSetting")
 		}

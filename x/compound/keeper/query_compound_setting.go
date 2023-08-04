@@ -47,7 +47,7 @@ func (k Keeper) CompoundSetting(goCtx context.Context, req *types.QueryGetCompou
 
 	val, found := k.GetCompoundSetting(
 		ctx,
-		req.Index123,
+		req.Delegator,
 	)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")

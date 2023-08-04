@@ -18,7 +18,7 @@ var _ = strconv.IntSize
 func createNCompoundSetting(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.CompoundSetting {
 	items := make([]types.CompoundSetting, n)
 	for i := range items {
-		items[i].Index123 = strconv.Itoa(i)
+		items[i].Delegator = strconv.Itoa(i)
 
 		keeper.SetCompoundSetting(ctx, items[i])
 	}
@@ -30,7 +30,7 @@ func TestCompoundSettingGet(t *testing.T) {
 	items := createNCompoundSetting(keeper, ctx, 10)
 	for _, item := range items {
 		rst, found := keeper.GetCompoundSetting(ctx,
-			item.Index123,
+			item.Delegator,
 		)
 		require.True(t, found)
 		require.Equal(t,
@@ -44,10 +44,10 @@ func TestCompoundSettingRemove(t *testing.T) {
 	items := createNCompoundSetting(keeper, ctx, 10)
 	for _, item := range items {
 		keeper.RemoveCompoundSetting(ctx,
-			item.Index123,
+			item.Delegator,
 		)
 		_, found := keeper.GetCompoundSetting(ctx,
-			item.Index123,
+			item.Delegator,
 		)
 		require.False(t, found)
 	}

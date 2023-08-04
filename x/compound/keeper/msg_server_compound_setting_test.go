@@ -20,15 +20,13 @@ func TestCompoundSettingMsgServerCreate(t *testing.T) {
 	k, ctx := keepertest.CompoundKeeper(t)
 	srv := keeper.NewMsgServerImpl(*k)
 	wctx := sdk.WrapSDKContext(ctx)
-	delegator := "A"
 	for i := 0; i < 5; i++ {
-		expected := &types.MsgCreateCompoundSetting{Delegator: delegator,
-			Index123: strconv.Itoa(i),
-		}
+		delegator := strconv.Itoa(i)
+		expected := &types.MsgCreateCompoundSetting{Delegator: delegator}
 		_, err := srv.CreateCompoundSetting(wctx, expected)
 		require.NoError(t, err)
 		rst, found := k.GetCompoundSetting(ctx,
-			expected.Index123,
+			expected.Delegator,
 		)
 		require.True(t, found)
 		require.Equal(t, expected.Delegator, rst.Delegator)
@@ -44,24 +42,13 @@ func TestCompoundSettingMsgServerUpdate(t *testing.T) {
 		err     error
 	}{
 		{
-			desc: "Completed",
-			request: &types.MsgUpdateCompoundSetting{Delegator: delegator,
-				Index123: strconv.Itoa(0),
-			},
+			desc:    "Completed",
+			request: &types.MsgUpdateCompoundSetting{Delegator: delegator},
 		},
 		{
-			desc: "Unauthorized",
-			request: &types.MsgUpdateCompoundSetting{Delegator: "B",
-				Index123: strconv.Itoa(0),
-			},
-			err: sdkerrors.ErrUnauthorized,
-		},
-		{
-			desc: "KeyNotFound",
-			request: &types.MsgUpdateCompoundSetting{Delegator: delegator,
-				Index123: strconv.Itoa(100000),
-			},
-			err: sdkerrors.ErrKeyNotFound,
+			desc:    "KeyNotFound",
+			request: &types.MsgUpdateCompoundSetting{Delegator: delegator},
+			err:     sdkerrors.ErrKeyNotFound,
 		},
 	}
 	for _, tc := range tests {
@@ -69,11 +56,15 @@ func TestCompoundSettingMsgServerUpdate(t *testing.T) {
 			k, ctx := keepertest.CompoundKeeper(t)
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
-			expected := &types.MsgCreateCompoundSetting{Delegator: delegator,
-				Index123: strconv.Itoa(0),
-			}
+			expected := &types.MsgCreateCompoundSetting{Delegator: delegator}
 			_, err := srv.CreateCompoundSetting(wctx, expected)
 			require.NoError(t, err)
+
+			if tc.desc == "KeyNotFound" {
+				delete := &types.MsgDeleteCompoundSetting{Delegator: delegator}
+				_, err = srv.DeleteCompoundSetting(wctx, delete)
+				require.NoError(t, err)
+			}
 
 			_, err = srv.UpdateCompoundSetting(wctx, tc.request)
 			if tc.err != nil {
@@ -81,7 +72,7 @@ func TestCompoundSettingMsgServerUpdate(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				rst, found := k.GetCompoundSetting(ctx,
-					expected.Index123,
+					expected.Delegator,
 				)
 				require.True(t, found)
 				require.Equal(t, expected.Delegator, rst.Delegator)
@@ -99,24 +90,13 @@ func TestCompoundSettingMsgServerDelete(t *testing.T) {
 		err     error
 	}{
 		{
-			desc: "Completed",
-			request: &types.MsgDeleteCompoundSetting{Delegator: delegator,
-				Index123: strconv.Itoa(0),
-			},
+			desc:    "Completed",
+			request: &types.MsgDeleteCompoundSetting{Delegator: delegator},
 		},
 		{
-			desc: "Unauthorized",
-			request: &types.MsgDeleteCompoundSetting{Delegator: "B",
-				Index123: strconv.Itoa(0),
-			},
-			err: sdkerrors.ErrUnauthorized,
-		},
-		{
-			desc: "KeyNotFound",
-			request: &types.MsgDeleteCompoundSetting{Delegator: delegator,
-				Index123: strconv.Itoa(100000),
-			},
-			err: sdkerrors.ErrKeyNotFound,
+			desc:    "KeyNotFound",
+			request: &types.MsgDeleteCompoundSetting{Delegator: delegator},
+			err:     sdkerrors.ErrKeyNotFound,
 		},
 	}
 	for _, tc := range tests {
@@ -125,17 +105,22 @@ func TestCompoundSettingMsgServerDelete(t *testing.T) {
 			srv := keeper.NewMsgServerImpl(*k)
 			wctx := sdk.WrapSDKContext(ctx)
 
-			_, err := srv.CreateCompoundSetting(wctx, &types.MsgCreateCompoundSetting{Delegator: delegator,
-				Index123: strconv.Itoa(0),
-			})
+			_, err := srv.CreateCompoundSetting(wctx, &types.MsgCreateCompoundSetting{Delegator: delegator})
 			require.NoError(t, err)
+
+			if tc.desc == "KeyNotFound" {
+				delete := &types.MsgDeleteCompoundSetting{Delegator: delegator}
+				_, err := srv.DeleteCompoundSetting(wctx, delete)
+				require.NoError(t, err)
+			}
+
 			_, err = srv.DeleteCompoundSetting(wctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
 				require.NoError(t, err)
 				_, found := k.GetCompoundSetting(ctx,
-					tc.request.Index123,
+					tc.request.Delegator,
 				)
 				require.False(t, found)
 			}

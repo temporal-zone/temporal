@@ -14,7 +14,7 @@ func (k msgServer) CreateCompoundSetting(goCtx context.Context, msg *types.MsgCr
 	// Check if the value already exists
 	_, isFound := k.GetCompoundSetting(
 		ctx,
-		msg.Index123,
+		msg.Delegator,
 	)
 	if isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
@@ -22,7 +22,6 @@ func (k msgServer) CreateCompoundSetting(goCtx context.Context, msg *types.MsgCr
 
 	var compoundSetting = types.CompoundSetting{
 		Delegator:        msg.Delegator,
-		Index123:         msg.Index123,
 		ValidatorSetting: msg.ValidatorSetting,
 		AmountToRemain:   msg.AmountToRemain,
 		Frequency:        msg.Frequency,
@@ -41,7 +40,7 @@ func (k msgServer) UpdateCompoundSetting(goCtx context.Context, msg *types.MsgUp
 	// Check if the value exists
 	valFound, isFound := k.GetCompoundSetting(
 		ctx,
-		msg.Index123,
+		msg.Delegator,
 	)
 	if !isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
@@ -54,7 +53,6 @@ func (k msgServer) UpdateCompoundSetting(goCtx context.Context, msg *types.MsgUp
 
 	var compoundSetting = types.CompoundSetting{
 		Delegator:        msg.Delegator,
-		Index123:         msg.Index123,
 		ValidatorSetting: msg.ValidatorSetting,
 		AmountToRemain:   msg.AmountToRemain,
 		Frequency:        msg.Frequency,
@@ -71,7 +69,7 @@ func (k msgServer) DeleteCompoundSetting(goCtx context.Context, msg *types.MsgDe
 	// Check if the value exists
 	valFound, isFound := k.GetCompoundSetting(
 		ctx,
-		msg.Index123,
+		msg.Delegator,
 	)
 	if !isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
@@ -84,7 +82,7 @@ func (k msgServer) DeleteCompoundSetting(goCtx context.Context, msg *types.MsgDe
 
 	k.RemoveCompoundSetting(
 		ctx,
-		msg.Index123,
+		msg.Delegator,
 	)
 
 	return &types.MsgDeleteCompoundSettingResponse{}, nil

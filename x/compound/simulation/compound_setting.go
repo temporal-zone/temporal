@@ -25,13 +25,11 @@ func SimulateMsgCreateCompoundSetting(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		i := r.Int()
 		msg := &types.MsgCreateCompoundSetting{
 			Delegator: simAccount.Address.String(),
-			Index123:  strconv.Itoa(i),
 		}
 
-		_, found := k.GetCompoundSetting(ctx, msg.Index123)
+		_, found := k.GetCompoundSetting(ctx, msg.Delegator)
 		if found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "CompoundSetting already exist"), nil, nil
 		}
@@ -78,9 +76,7 @@ func SimulateMsgUpdateCompoundSetting(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "compoundSetting delegator not found"), nil, nil
 		}
-		msg.Delegator = simAccount.Address.String()
-
-		msg.Index123 = compoundSetting.Index123
+		msg.Delegator = compoundSetting.Delegator
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -124,9 +120,7 @@ func SimulateMsgDeleteCompoundSetting(
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "compoundSetting delegator not found"), nil, nil
 		}
-		msg.Delegator = simAccount.Address.String()
-
-		msg.Index123 = compoundSetting.Index123
+		msg.Delegator = compoundSetting.Delegator
 
 		txCtx := simulation.OperationInput{
 			R:               r,

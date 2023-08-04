@@ -62,15 +62,15 @@ func request_Query_CompoundSetting_0(ctx context.Context, marshaler runtime.Mars
 		_   = err
 	)
 
-	val, ok = pathParams["index123"]
+	val, ok = pathParams["delegator"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "index123")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "delegator")
 	}
 
-	protoReq.Index123, err = runtime.String(val)
+	protoReq.Delegator, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "index123", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator", err)
 	}
 
 	msg, err := client.CompoundSetting(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -89,15 +89,15 @@ func local_request_Query_CompoundSetting_0(ctx context.Context, marshaler runtim
 		_   = err
 	)
 
-	val, ok = pathParams["index123"]
+	val, ok = pathParams["delegator"]
 	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "index123")
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "delegator")
 	}
 
-	protoReq.Index123, err = runtime.String(val)
+	protoReq.Delegator, err = runtime.String(val)
 
 	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "index123", err)
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "delegator", err)
 	}
 
 	msg, err := server.CompoundSetting(ctx, &protoReq)
@@ -323,7 +323,7 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 var (
 	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"temporal", "compound", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_CompoundSetting_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"temporal", "compound", "compound_setting", "index123"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_CompoundSetting_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"temporal", "compound", "compound_setting", "delegator"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Query_CompoundSettingAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"temporal", "compound", "compound_setting"}, "", runtime.AssumeColonVerbOpt(true)))
 )

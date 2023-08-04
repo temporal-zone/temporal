@@ -17,27 +17,24 @@ service Msg {
 }
 message MsgCreateCompoundSetting {
   string                   delegator        = 1;
-  string                   index123         = 2;
-  ValidatorSetting         validatorSetting = 3;
-  cosmos.base.v1beta1.Coin amountToRemain   = 4 [(gogoproto.nullable) = false];
-  int32                    frequency        = 5;
+  ValidatorSetting         validatorSetting = 2;
+  cosmos.base.v1beta1.Coin amountToRemain   = 3 [(gogoproto.nullable) = false];
+  int32                    frequency        = 4;
 }
 
 message MsgCreateCompoundSettingResponse {}
 
 message MsgUpdateCompoundSetting {
   string                   delegator        = 1;
-  string                   index123         = 2;
-  ValidatorSetting         validatorSetting = 3;
-  cosmos.base.v1beta1.Coin amountToRemain   = 4 [(gogoproto.nullable) = false];
-  int32                    frequency        = 5;
+  ValidatorSetting         validatorSetting = 2;
+  cosmos.base.v1beta1.Coin amountToRemain   = 3 [(gogoproto.nullable) = false];
+  int32                    frequency        = 4;
 }
 
 message MsgUpdateCompoundSettingResponse {}
 
 message MsgDeleteCompoundSetting {
   string delegator = 1;
-  string index123  = 2;
 }
 
 message MsgDeleteCompoundSettingResponse {}

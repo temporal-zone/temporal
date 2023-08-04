@@ -57,10 +57,10 @@ func CmdShowCompoundSetting() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			argIndex123 := args[0]
+			argDelegator := args[0]
 
 			params := &types.QueryGetCompoundSettingRequest{
-				Index123: argIndex123,
+				Delegator: argDelegator,
 			}
 
 			res, err := queryClient.CompoundSetting(cmd.Context(), params)

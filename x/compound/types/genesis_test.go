@@ -24,10 +24,10 @@ func TestGenesisState_Validate(t *testing.T) {
 
 				CompoundSettingList: []types.CompoundSetting{
 					{
-						Index123: "0",
+						Delegator: "0",
 					},
 					{
-						Index123: "1",
+						Delegator: "1",
 					},
 				},
 				// this line is used by starport scaffolding # types/genesis/validField
@@ -39,10 +39,10 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				CompoundSettingList: []types.CompoundSetting{
 					{
-						Index123: "0",
+						Delegator: "0",
 					},
 					{
-						Index123: "0",
+						Delegator: "0",
 					},
 				},
 			},

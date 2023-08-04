@@ -13,24 +13,21 @@ import (
 
 func CmdCreateCompoundSetting() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-compound-setting [index-123] [validator-setting] [amount-to-remain] [frequency]",
-		Short: "Create a new CompoundSetting",
-		Args:  cobra.ExactArgs(4),
+		Use:   "create-compound-setting [validator-setting] [amount-to-remain] [frequency]",
+		Short: "Create a new CompoundSetting for yourself",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
-			indexIndex123 := args[0]
-
 			// Get value arguments
 			argValidatorSetting := new(types.ValidatorSetting)
-			err = json.Unmarshal([]byte(args[1]), argValidatorSetting)
+			err = json.Unmarshal([]byte(args[0]), argValidatorSetting)
 			if err != nil {
 				return err
 			}
-			argAmountToRemain, err := sdk.ParseCoinNormalized(args[2])
+			argAmountToRemain, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}
-			argFrequency, err := cast.ToInt32E(args[3])
+			argFrequency, err := cast.ToInt32E(args[2])
 			if err != nil {
 				return err
 			}
@@ -42,7 +39,6 @@ func CmdCreateCompoundSetting() *cobra.Command {
 
 			msg := types.NewMsgCreateCompoundSetting(
 				clientCtx.GetFromAddress().String(),
-				indexIndex123,
 				argValidatorSetting,
 				argAmountToRemain,
 				argFrequency,
@@ -61,24 +57,21 @@ func CmdCreateCompoundSetting() *cobra.Command {
 
 func CmdUpdateCompoundSetting() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-compound-setting [index-123] [validator-setting] [amount-to-remain] [frequency]",
-		Short: "Update a CompoundSetting",
-		Args:  cobra.ExactArgs(4),
+		Use:   "update-compound-setting [validator-setting] [amount-to-remain] [frequency]",
+		Short: "Update your own CompoundSetting",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
-			indexIndex123 := args[0]
-
 			// Get value arguments
 			argValidatorSetting := new(types.ValidatorSetting)
-			err = json.Unmarshal([]byte(args[1]), argValidatorSetting)
+			err = json.Unmarshal([]byte(args[0]), argValidatorSetting)
 			if err != nil {
 				return err
 			}
-			argAmountToRemain, err := sdk.ParseCoinNormalized(args[2])
+			argAmountToRemain, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
 			}
-			argFrequency, err := cast.ToInt32E(args[3])
+			argFrequency, err := cast.ToInt32E(args[2])
 			if err != nil {
 				return err
 			}
@@ -90,7 +83,6 @@ func CmdUpdateCompoundSetting() *cobra.Command {
 
 			msg := types.NewMsgUpdateCompoundSetting(
 				clientCtx.GetFromAddress().String(),
-				indexIndex123,
 				argValidatorSetting,
 				argAmountToRemain,
 				argFrequency,
@@ -109,12 +101,10 @@ func CmdUpdateCompoundSetting() *cobra.Command {
 
 func CmdDeleteCompoundSetting() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-compound-setting [index-123]",
-		Short: "Delete a CompoundSetting",
-		Args:  cobra.ExactArgs(1),
+		Use:   "delete-compound-setting",
+		Short: "Delete your own CompoundSetting",
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			indexIndex123 := args[0]
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -122,7 +112,6 @@ func CmdDeleteCompoundSetting() *cobra.Command {
 
 			msg := types.NewMsgDeleteCompoundSetting(
 				clientCtx.GetFromAddress().String(),
-				indexIndex123,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
