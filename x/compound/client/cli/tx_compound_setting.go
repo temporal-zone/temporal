@@ -18,11 +18,17 @@ func CmdCreateCompoundSetting() *cobra.Command {
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get value arguments
-			argValidatorSetting := new(types.ValidatorSetting)
-			err = json.Unmarshal([]byte(args[0]), argValidatorSetting)
+			argValidatorSettingBytes := new([]types.ValidatorSetting)
+			err = json.Unmarshal([]byte(args[0]), argValidatorSettingBytes)
 			if err != nil {
 				return err
 			}
+
+			argValidatorSettings := make([]*types.ValidatorSetting, 0, 100)
+			for _, vs := range *argValidatorSettingBytes {
+				argValidatorSettings = append(argValidatorSettings, &vs)
+			}
+
 			argAmountToRemain, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
@@ -39,7 +45,7 @@ func CmdCreateCompoundSetting() *cobra.Command {
 
 			msg := types.NewMsgCreateCompoundSetting(
 				clientCtx.GetFromAddress().String(),
-				argValidatorSetting,
+				argValidatorSettings,
 				argAmountToRemain,
 				argFrequency,
 			)
@@ -62,11 +68,17 @@ func CmdUpdateCompoundSetting() *cobra.Command {
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get value arguments
-			argValidatorSetting := new(types.ValidatorSetting)
-			err = json.Unmarshal([]byte(args[0]), argValidatorSetting)
+			argValidatorSettingBytes := new([]types.ValidatorSetting)
+			err = json.Unmarshal([]byte(args[0]), argValidatorSettingBytes)
 			if err != nil {
 				return err
 			}
+
+			argValidatorSettings := make([]*types.ValidatorSetting, 0, 100)
+			for _, vs := range *argValidatorSettingBytes {
+				argValidatorSettings = append(argValidatorSettings, &vs)
+			}
+
 			argAmountToRemain, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
 				return err
@@ -83,7 +95,7 @@ func CmdUpdateCompoundSetting() *cobra.Command {
 
 			msg := types.NewMsgUpdateCompoundSetting(
 				clientCtx.GetFromAddress().String(),
-				argValidatorSetting,
+				argValidatorSettings,
 				argAmountToRemain,
 				argFrequency,
 			)

@@ -46454,13 +46454,14 @@ paths:
                     delegator:
                       type: string
                     validatorSetting:
-                      type: object
-                      properties:
-                        validatorAddress:
-                          type: string
-                        percentToCompound:
-                          type: integer
-                          format: int32
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          validatorAddress:
+                            type: string
+                          percentToCompound:
+                            type: string
                     amountToRemain:
                       type: object
                       properties:
@@ -46600,13 +46601,14 @@ paths:
                   delegator:
                     type: string
                   validatorSetting:
-                    type: object
-                    properties:
-                      validatorAddress:
-                        type: string
-                      percentToCompound:
-                        type: integer
-                        format: int32
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        validatorAddress:
+                          type: string
+                        percentToCompound:
+                          type: string
                   amountToRemain:
                     type: object
                     properties:
@@ -75596,13 +75598,14 @@ definitions:
       delegator:
         type: string
       validatorSetting:
-        type: object
-        properties:
-          validatorAddress:
-            type: string
-          percentToCompound:
-            type: integer
-            format: int32
+        type: array
+        items:
+          type: object
+          properties:
+            validatorAddress:
+              type: string
+            percentToCompound:
+              type: string
       amountToRemain:
         type: object
         properties:
@@ -75645,13 +75648,14 @@ definitions:
             delegator:
               type: string
             validatorSetting:
-              type: object
-              properties:
-                validatorAddress:
-                  type: string
-                percentToCompound:
-                  type: integer
-                  format: int32
+              type: array
+              items:
+                type: object
+                properties:
+                  validatorAddress:
+                    type: string
+                  percentToCompound:
+                    type: string
             amountToRemain:
               type: object
               properties:
@@ -75743,13 +75747,14 @@ definitions:
           delegator:
             type: string
           validatorSetting:
-            type: object
-            properties:
-              validatorAddress:
-                type: string
-              percentToCompound:
-                type: integer
-                format: int32
+            type: array
+            items:
+              type: object
+              properties:
+                validatorAddress:
+                  type: string
+                percentToCompound:
+                  type: string
           amountToRemain:
             type: object
             properties:
@@ -75791,5 +75796,4 @@ definitions:
       validatorAddress:
         type: string
       percentToCompound:
-        type: integer
-        format: int32
+        type: string

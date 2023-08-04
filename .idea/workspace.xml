@@ -5,33 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c11961e-57f9-4dbd-a335-d77d84ded210" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/static/openapi.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/static/openapi.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/proto/temporal/compound/compound_setting.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/compound_setting.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/query.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/query.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/proto/temporal/compound/tx.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/tx.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/validator_setting.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/validator_setting.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/genesis_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/genesis_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/query_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/query_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/query_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/query_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/module_simulation.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/module_simulation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/simulation/compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/simulation/compound_setting.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/x/compound/types/compound_setting.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/compound_setting.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/genesis.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/genesis.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/genesis_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/genesis_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/key_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/key_compound_setting.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/x/compound/types/messages_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/messages_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/query.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/query.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/query.pb.gw.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/query.pb.gw.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/x/compound/types/tx.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/tx.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/types/validator_setting.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/validator_setting.pb.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +29,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectId" id="2TRSLbCHcvRN5jmhWez4QerlnUv" />
   <component name="ProjectViewState">
@@ -70,7 +53,7 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
   }
 }</component>
-  <component name="RunManager" selected="Go Test.TestCompoundSettingMsgServerDelete in temporal/x/compound/keeper">
+  <component name="RunManager" selected="Go Test.go test temporal/x/compound/client/cli">
     <configuration name="TestCompoundSettingMsgServerCreate in temporal/x/compound/keeper" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="temporal" />
       <working_directory value="$PROJECT_DIR$/x/compound/keeper" />
@@ -119,12 +102,12 @@
       <pattern value="^\QTestCompoundSettingMsgServerUpdate\E$/^\QKeyNotFound\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="go test temporal/x/compound/keeper" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="go test temporal/x/compound/client/cli" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="temporal" />
-      <working_directory value="$PROJECT_DIR$/x/compound/keeper" />
+      <working_directory value="$PROJECT_DIR$/x/compound/client/cli" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="temporal/x/compound/keeper" />
+      <package value="temporal/x/compound/client/cli" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
@@ -132,11 +115,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.go test temporal/x/compound/client/cli" />
         <item itemvalue="Go Test.TestCompoundSettingMsgServerDelete in temporal/x/compound/keeper" />
         <item itemvalue="Go Test.TestCompoundSettingMsgServerUpdate/KeyNotFound in temporal/x/compound/keeper" />
         <item itemvalue="Go Test.TestCompoundSettingMsgServerUpdate in temporal/x/compound/keeper" />
         <item itemvalue="Go Test.TestCompoundSettingMsgServerCreate in temporal/x/compound/keeper" />
-        <item itemvalue="Go Test.go test temporal/x/compound/keeper" />
       </list>
     </recent_temporary>
   </component>

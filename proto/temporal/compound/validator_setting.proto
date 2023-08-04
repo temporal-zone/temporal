@@ -1,10 +1,15 @@
 syntax = "proto3";
 package temporal.compound;
 
+import "gogoproto/gogo.proto";
+
 option go_package = "temporal/x/compound/types";
 
 message ValidatorSetting {
   
-  string validatorAddress = 1; 
-  int32 percentToCompound = 2; 
+  string validatorAddress = 1;
+  string percentToCompound = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
