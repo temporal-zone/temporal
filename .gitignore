@@ -19,6 +19,5 @@
 
 # Go workspace file
 go.work
-.idea/workspace.xml
-.idea/vcs.xml
-.idea/temporal.iml
+.idea/
+
