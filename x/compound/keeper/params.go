@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 // GetParams get all parameters as types.Params

@@ -2,8 +2,8 @@ package compound
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"temporal/x/compound/keeper"
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/x/compound/keeper"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

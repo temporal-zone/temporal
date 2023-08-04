@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 type (

@@ -3,7 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 // SetCompoundSetting set a specific compoundSetting in the store from its index

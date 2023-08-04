@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 func CmdListCompoundSetting() *cobra.Command {

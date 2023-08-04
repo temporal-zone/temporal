@@ -3,7 +3,7 @@ package temporal.compound;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "temporal/x/compound/types";
+option go_package = "github.com/temporal-zone/temporal/x/compound/types";
 
 // Params defines the parameters for the module.
 message Params {

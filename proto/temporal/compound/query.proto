@@ -11,7 +11,7 @@ import "temporal/compound/validator_setting.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "temporal/compound/previous_compounding.proto";
 
-option go_package = "temporal/x/compound/types";
+option go_package = "github.com/temporal-zone/temporal/x/compound/types";
 
 // Query defines the gRPC querier service.
 service Query {

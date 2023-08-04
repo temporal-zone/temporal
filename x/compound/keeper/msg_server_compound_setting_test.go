@@ -8,9 +8,9 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	keepertest "temporal/testutil/keeper"
-	"temporal/x/compound/keeper"
-	"temporal/x/compound/types"
+	keepertest "github.com/temporal-zone/temporal/testutil/keeper"
+	"github.com/temporal-zone/temporal/x/compound/keeper"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 // Prevent strconv unused error

@@ -7,7 +7,7 @@ import "temporal/compound/params.proto";
 import "temporal/compound/compound_setting.proto";
 import "temporal/compound/previous_compounding.proto";
 
-option go_package = "temporal/x/compound/types";
+option go_package = "github.com/temporal-zone/temporal/x/compound/types";
 
 // GenesisState defines the compound module's genesis state.
 message GenesisState {

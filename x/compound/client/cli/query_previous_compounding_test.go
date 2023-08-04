@@ -12,10 +12,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"temporal/testutil/network"
-	"temporal/testutil/nullify"
-	"temporal/x/compound/client/cli"
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/testutil/network"
+	"github.com/temporal-zone/temporal/testutil/nullify"
+	"github.com/temporal-zone/temporal/x/compound/client/cli"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 // Prevent strconv unused error

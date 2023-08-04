@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	keepertest "temporal/testutil/keeper"
-	"temporal/testutil/nullify"
-	"temporal/x/compound"
-	"temporal/x/compound/types"
+	keepertest "github.com/temporal-zone/temporal/testutil/keeper"
+	"github.com/temporal-zone/temporal/testutil/nullify"
+	"github.com/temporal-zone/temporal/x/compound"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 func TestGenesis(t *testing.T) {

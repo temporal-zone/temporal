@@ -110,13 +110,13 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 	"github.com/spf13/cast"
 
-	compoundmodule "temporal/x/compound"
-	compoundmodulekeeper "temporal/x/compound/keeper"
-	compoundmoduletypes "temporal/x/compound/types"
+	compoundmodule "github.com/temporal-zone/temporal/x/compound"
+	compoundmodulekeeper "github.com/temporal-zone/temporal/x/compound/keeper"
+	compoundmoduletypes "github.com/temporal-zone/temporal/x/compound/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
-	appparams "temporal/app/params"
-	"temporal/docs"
+	appparams "github.com/temporal-zone/temporal/app/params"
+	"github.com/temporal-zone/temporal/docs"
 )
 
 const (

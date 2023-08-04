@@ -12,8 +12,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
-	"temporal/testutil/network"
-	"temporal/x/compound/client/cli"
+	"github.com/temporal-zone/temporal/testutil/network"
+	"github.com/temporal-zone/temporal/x/compound/client/cli"
 )
 
 // Prevent strconv unused error

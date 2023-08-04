@@ -5,7 +5,7 @@ import (
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
-	"temporal/testutil/sample"
+	"github.com/temporal-zone/temporal/testutil/sample"
 )
 
 func TestMsgCreateCompoundSetting_ValidateBasic(t *testing.T) {

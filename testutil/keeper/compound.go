@@ -13,8 +13,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/stretchr/testify/require"
-	"temporal/x/compound/keeper"
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/x/compound/keeper"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 func CompoundKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {

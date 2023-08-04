@@ -1,4 +1,4 @@
-module temporal
+module github.com/temporal-zone/temporal
 
 go 1.19
 

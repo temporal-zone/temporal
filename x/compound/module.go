@@ -16,9 +16,9 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"temporal/x/compound/client/cli"
-	"temporal/x/compound/keeper"
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/x/compound/client/cli"
+	"github.com/temporal-zone/temporal/x/compound/keeper"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 var (

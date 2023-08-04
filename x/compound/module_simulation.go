@@ -8,9 +8,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"temporal/testutil/sample"
-	compoundsimulation "temporal/x/compound/simulation"
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/testutil/sample"
+	compoundsimulation "github.com/temporal-zone/temporal/x/compound/simulation"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 // avoid unused import issue

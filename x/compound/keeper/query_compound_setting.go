@@ -6,9 +6,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/temporal-zone/temporal/x/compound/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"temporal/x/compound/types"
 )
 
 func (k Keeper) CompoundSettingAll(goCtx context.Context, req *types.QueryAllCompoundSettingRequest) (*types.QueryAllCompoundSettingResponse, error) {
@@ -45,10 +45,7 @@ func (k Keeper) CompoundSetting(goCtx context.Context, req *types.QueryGetCompou
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	val, found := k.GetCompoundSetting(
-		ctx,
-		req.Delegator,
-	)
+	val, found := k.GetCompoundSetting(ctx, req.Delegator)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}

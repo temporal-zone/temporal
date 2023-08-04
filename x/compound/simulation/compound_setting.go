@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"temporal/x/compound/keeper"
-	"temporal/x/compound/types"
+	"github.com/temporal-zone/temporal/x/compound/keeper"
+	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
 // Prevent strconv unused error
