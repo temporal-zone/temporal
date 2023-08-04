@@ -46706,6 +46706,7 @@ paths:
                       type: string
                     timestamp:
                       type: string
+                      format: date-time
               pagination:
                 type: object
                 properties:
@@ -46828,6 +46829,7 @@ paths:
                     type: string
                   timestamp:
                     type: string
+                    format: date-time
         default:
           description: An unexpected error response.
           schema:
@@ -75637,6 +75639,7 @@ definitions:
         type: string
       timestamp:
         type: string
+        format: date-time
   temporal.compound.QueryAllCompoundSettingResponse:
     type: object
     properties:
@@ -75712,6 +75715,7 @@ definitions:
               type: string
             timestamp:
               type: string
+              format: date-time
       pagination:
         type: object
         properties:
@@ -75783,6 +75787,7 @@ definitions:
             type: string
           timestamp:
             type: string
+            format: date-time
   temporal.compound.QueryParamsResponse:
     type: object
     properties:
