@@ -113,6 +113,9 @@ import (
 	compoundmodule "github.com/temporal-zone/temporal/x/compound"
 	compoundmodulekeeper "github.com/temporal-zone/temporal/x/compound/keeper"
 	compoundmoduletypes "github.com/temporal-zone/temporal/x/compound/types"
+	recordmodule "github.com/temporal-zone/temporal/x/record"
+	recordmodulekeeper "github.com/temporal-zone/temporal/x/record/keeper"
+	recordmoduletypes "github.com/temporal-zone/temporal/x/record/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/temporal-zone/temporal/app/params"
@@ -174,6 +177,7 @@ var (
 		vesting.AppModuleBasic{},
 		consensus.AppModuleBasic{},
 		compoundmodule.AppModuleBasic{},
+		recordmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -251,6 +255,8 @@ type App struct {
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
 	CompoundKeeper compoundmodulekeeper.Keeper
+
+	RecordKeeper recordmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -298,6 +304,7 @@ func New(
 		feegrant.StoreKey, evidencetypes.StoreKey, ibctransfertypes.StoreKey, icahosttypes.StoreKey,
 		capabilitytypes.StoreKey, group.StoreKey, icacontrollertypes.StoreKey, consensusparamtypes.StoreKey,
 		compoundmoduletypes.StoreKey,
+		recordmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -533,6 +540,16 @@ func New(
 	)
 	compoundModule := compoundmodule.NewAppModule(appCodec, app.CompoundKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.RecordKeeper = *recordmodulekeeper.NewKeeper(
+		appCodec,
+		keys[recordmoduletypes.StoreKey],
+		keys[recordmoduletypes.MemStoreKey],
+		app.GetSubspace(recordmoduletypes.ModuleName),
+
+		app.StakingKeeper,
+	)
+	recordModule := recordmodule.NewAppModule(appCodec, app.RecordKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	/**** IBC Routing ****/
@@ -595,6 +612,7 @@ func New(
 		transferModule,
 		icaModule,
 		compoundModule,
+		recordModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 
 		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)), // always be last to make sure that it checks for all invariants and not only part of them
@@ -628,6 +646,7 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		compoundmoduletypes.ModuleName,
+		recordmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -654,6 +673,7 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		compoundmoduletypes.ModuleName,
+		recordmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -685,6 +705,7 @@ func New(
 		vestingtypes.ModuleName,
 		consensusparamtypes.ModuleName,
 		compoundmoduletypes.ModuleName,
+		recordmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 	app.mm.SetOrderInitGenesis(genesisModuleOrder...)
@@ -910,6 +931,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(compoundmoduletypes.ModuleName)
+	paramsKeeper.Subspace(recordmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

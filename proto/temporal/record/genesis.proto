@@ -1,0 +1,12 @@
+syntax = "proto3";
+package temporal.record;
+
+import "gogoproto/gogo.proto";
+import "temporal/record/params.proto";
+
+option go_package = "github.com/temporal-zone/temporal/x/record/types";
+
+// GenesisState defines the record module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

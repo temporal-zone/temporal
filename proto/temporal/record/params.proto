@@ -1,0 +1,12 @@
+syntax = "proto3";
+package temporal.record;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/temporal-zone/temporal/x/record/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+  
+}

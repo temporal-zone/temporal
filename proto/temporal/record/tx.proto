@@ -1,0 +1,7 @@
+syntax = "proto3";
+package temporal.record;
+
+option go_package = "github.com/temporal-zone/temporal/x/record/types";
+
+// Msg defines the Msg service.
+service Msg {}
