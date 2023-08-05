@@ -1,0 +1,12 @@
+syntax = "proto3";
+package temporal.record;
+
+option go_package = "github.com/temporal-zone/temporal/x/record/types";
+import "gogoproto/gogo.proto"; 
+import "cosmos/base/v1beta1/coin.proto"; 
+
+message DelegationTimestamp {
+  
+  string timestamp = 1; 
+  cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false]; 
+}
