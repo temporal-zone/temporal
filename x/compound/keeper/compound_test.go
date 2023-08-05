@@ -12,8 +12,6 @@ import (
 	"time"
 )
 
-//TODO: refactor all unit test to use a cases slice and t.Run() like TestShouldCompoundingHappen and TestHandleLeftOverAmount
-
 func TestShouldCompoundingHappen(t *testing.T) {
 	s := apptesting.SetupSuitelessTestHelper()
 

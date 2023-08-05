@@ -127,3 +127,36 @@ func TestCompoundSettingMsgServerDelete(t *testing.T) {
 		})
 	}
 }
+
+// TODO when minimumCompoundFrequency becomes a module level param, change this tests uint64(600) to test against the param.
+func TestCheckFrequency(t *testing.T) {
+	tests := []struct {
+		desc    string
+		request uint64
+		err     error
+	}{
+		{
+			desc:    "Under",
+			request: 10,
+		},
+		{
+			desc:    "Over",
+			request: 700,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			k, _ := keepertest.CompoundKeeper(t)
+
+			onceEvery := k.CheckFrequency(tc.request)
+
+			if tc.desc == "Under" {
+				require.GreaterOrEqual(t, onceEvery, uint64(600))
+			}
+
+			if tc.desc == "Over" {
+				require.Equal(t, onceEvery, tc.request)
+			}
+		})
+	}
+}

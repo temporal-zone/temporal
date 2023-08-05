@@ -23,7 +23,7 @@ func (k msgServer) CreateCompoundSetting(goCtx context.Context, msg *types.MsgCr
 		Delegator:        msg.Delegator,
 		ValidatorSetting: msg.ValidatorSetting,
 		AmountToRemain:   msg.AmountToRemain,
-		Frequency:        CheckFrequency(msg.Frequency),
+		Frequency:        k.CheckFrequency(msg.Frequency),
 	}
 
 	k.SetCompoundSetting(
@@ -54,7 +54,7 @@ func (k msgServer) UpdateCompoundSetting(goCtx context.Context, msg *types.MsgUp
 		Delegator:        msg.Delegator,
 		ValidatorSetting: msg.ValidatorSetting,
 		AmountToRemain:   msg.AmountToRemain,
-		Frequency:        CheckFrequency(msg.Frequency),
+		Frequency:        k.CheckFrequency(msg.Frequency),
 	}
 
 	k.SetCompoundSetting(ctx, compoundSetting)
@@ -85,16 +85,4 @@ func (k msgServer) DeleteCompoundSetting(goCtx context.Context, msg *types.MsgDe
 	)
 
 	return &types.MsgDeleteCompoundSettingResponse{}, nil
-}
-
-// TODO: CheckFrequency needs test coverage
-// CheckFrequency checks to make sure frequency should be no less than X seconds.
-func CheckFrequency(onceEvery uint64) uint64 {
-	// TODO: Change minimumCompoundFrequency to be a module param
-	minimumCompoundFrequency := uint64(600)
-	if onceEvery < minimumCompoundFrequency {
-		return minimumCompoundFrequency
-	}
-
-	return onceEvery
 }
