@@ -46880,6 +46880,7 @@ paths:
                         properties:
                           timestamp:
                             type: string
+                            format: date-time
                           amount:
                             type: object
                             properties:
@@ -47023,6 +47024,7 @@ paths:
                       properties:
                         timestamp:
                           type: string
+                          format: date-time
                         amount:
                           type: object
                           properties:
@@ -76063,6 +76065,7 @@ definitions:
           properties:
             timestamp:
               type: string
+              format: date-time
             amount:
               type: object
               properties:
@@ -76083,6 +76086,7 @@ definitions:
     properties:
       timestamp:
         type: string
+        format: date-time
       amount:
         type: object
         properties:
@@ -76115,6 +76119,7 @@ definitions:
                 properties:
                   timestamp:
                     type: string
+                    format: date-time
                   amount:
                     type: object
                     properties:
@@ -76171,6 +76176,7 @@ definitions:
               properties:
                 timestamp:
                   type: string
+                  format: date-time
                 amount:
                   type: object
                   properties:

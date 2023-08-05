@@ -3,10 +3,14 @@ package temporal.record;
 
 option go_package = "github.com/temporal-zone/temporal/x/record/types";
 import "gogoproto/gogo.proto"; 
-import "cosmos/base/v1beta1/coin.proto"; 
+import "cosmos/base/v1beta1/coin.proto";
+import "google/protobuf/timestamp.proto";
 
 message DelegationTimestamp {
-  
-  string timestamp = 1; 
+
+  google.protobuf.Timestamp timestamp = 1 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
   cosmos.base.v1beta1.Coin amount = 2 [(gogoproto.nullable) = false]; 
 }

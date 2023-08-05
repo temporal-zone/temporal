@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c11961e-57f9-4dbd-a335-d77d84ded210" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/proto/temporal/record/delegation_history.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/record/delegation_history.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proto/temporal/record/delegation_timestamp.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/record/delegation_timestamp.proto" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
