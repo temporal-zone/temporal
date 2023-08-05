@@ -6,64 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2c11961e-57f9-4dbd-a335-d77d84ded210" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/encoding.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/encoding.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/simulation_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/app/simulation_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/temporald/cmd/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/temporald/cmd/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/temporald/cmd/root.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/temporald/cmd/root.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/temporald/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/temporald/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/compound_setting.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/compound_setting.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/genesis.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/genesis.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/params.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/params.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/previous_compounding.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/previous_compounding.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/query.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/query.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/tx.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/tx.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/validator_setting.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/validator_setting.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testutil/keeper/compound.go" beforeDir="false" afterPath="$PROJECT_DIR$/testutil/keeper/compound.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/testutil/network/network.go" beforeDir="false" afterPath="$PROJECT_DIR$/testutil/network/network.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query_params.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query_params.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query_previous_compounding.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query_previous_compounding.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query_previous_compounding_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query_previous_compounding_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/tx.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/tx.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/genesis.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/genesis.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/genesis_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/genesis_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/keeper.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/keeper.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/params.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/params.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/params_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/params_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/previous_compounding.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/previous_compounding.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/previous_compounding_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/previous_compounding_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/query.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/query.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/query_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/query_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/query_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/query_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/query_params.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/query_params.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/query_params_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/query_params_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/query_previous_compounding.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/query_previous_compounding.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/query_previous_compounding_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/query_previous_compounding_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/module.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/module.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/module_simulation.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/module_simulation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/simulation/compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/simulation/compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/compound_setting.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/compound_setting.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/expected_keepers.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/expected_keepers.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/genesis.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/genesis.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/genesis_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/genesis_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/messages_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/messages_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/params.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/params.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/previous_compounding.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/previous_compounding.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/query.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/query.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/tx.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/tx.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/validator_setting.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/validator_setting.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +53,7 @@
     "nodejs_package_manager_path": "npm"
   }
 }]]></component>
-  <component name="RunManager" selected="Go Test.TestShouldCompoundingHappen in github.com/temporal-zone/temporal/x/compound/keeper">
+  <component name="RunManager" selected="Go Test.go test github.com/temporal-zone/temporal/x/compound/keeper">
     <configuration name="TestCompoundSettingMsgServerDelete in temporal/x/compound/keeper" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="temporal" />
       <working_directory value="$PROJECT_DIR$/x/compound/keeper" />
@@ -171,8 +114,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Test.TestShouldCompoundingHappen in github.com/temporal-zone/temporal/x/compound/keeper" />
         <item itemvalue="Go Test.go test github.com/temporal-zone/temporal/x/compound/keeper" />
+        <item itemvalue="Go Test.TestShouldCompoundingHappen in github.com/temporal-zone/temporal/x/compound/keeper" />
         <item itemvalue="Go Test.go test temporal/x/compound/client/cli" />
         <item itemvalue="Go Test.TestCompoundSettingMsgServerDelete in temporal/x/compound/keeper" />
         <item itemvalue="Go Test.TestCompoundSettingMsgServerUpdate/KeyNotFound in temporal/x/compound/keeper" />

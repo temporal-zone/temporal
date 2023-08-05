@@ -46462,6 +46462,7 @@ paths:
                             type: string
                           percentToCompound:
                             type: string
+                            format: uint64
                     amountToRemain:
                       type: object
                       properties:
@@ -46478,8 +46479,8 @@ paths:
 
                         signatures required by gogoproto.
                     frequency:
-                      type: integer
-                      format: int32
+                      type: string
+                      format: uint64
               pagination:
                 type: object
                 properties:
@@ -46609,6 +46610,7 @@ paths:
                           type: string
                         percentToCompound:
                           type: string
+                          format: uint64
                   amountToRemain:
                     type: object
                     properties:
@@ -46625,8 +46627,8 @@ paths:
 
                       signatures required by gogoproto.
                   frequency:
-                    type: integer
-                    format: int32
+                    type: string
+                    format: uint64
         default:
           description: An unexpected error response.
           schema:
@@ -75608,6 +75610,7 @@ definitions:
               type: string
             percentToCompound:
               type: string
+              format: uint64
       amountToRemain:
         type: object
         properties:
@@ -75621,8 +75624,8 @@ definitions:
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
       frequency:
-        type: integer
-        format: int32
+        type: string
+        format: uint64
   temporal.compound.MsgCreateCompoundSettingResponse:
     type: object
   temporal.compound.MsgDeleteCompoundSettingResponse:
@@ -75659,6 +75662,7 @@ definitions:
                     type: string
                   percentToCompound:
                     type: string
+                    format: uint64
             amountToRemain:
               type: object
               properties:
@@ -75675,8 +75679,8 @@ definitions:
 
                 signatures required by gogoproto.
             frequency:
-              type: integer
-              format: int32
+              type: string
+              format: uint64
       pagination:
         type: object
         properties:
@@ -75759,6 +75763,7 @@ definitions:
                   type: string
                 percentToCompound:
                   type: string
+                  format: uint64
           amountToRemain:
             type: object
             properties:
@@ -75775,8 +75780,8 @@ definitions:
 
               signatures required by gogoproto.
           frequency:
-            type: integer
-            format: int32
+            type: string
+            format: uint64
   temporal.compound.QueryGetPreviousCompoundingResponse:
     type: object
     properties:
@@ -75802,3 +75807,4 @@ definitions:
         type: string
       percentToCompound:
         type: string
+        format: uint64

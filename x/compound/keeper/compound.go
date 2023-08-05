@@ -161,7 +161,7 @@ func (k Keeper) BuildCompoundActions(cs compTypes.CompoundSetting, amountToCompo
 
 		compoundActions = append(compoundActions, stakingCompoundAction)
 
-		totalCompoundPercent = totalCompoundPercent.Add(valSetting.PercentToCompound)
+		totalCompoundPercent = totalCompoundPercent.Add(math.NewInt(int64(valSetting.PercentToCompound)))
 	}
 
 	return totalCompoundPercent, compoundActions
@@ -215,8 +215,8 @@ func (k Keeper) RecordCompounding(ctx sdk.Context, address string, blockTime tim
 }
 
 // CalculateCompoundAmount calcs the compounding amount
-func (k Keeper) CalculateCompoundAmount(rewardAmount sdk.Coin, percentToCompound math.Int) math.Int {
-	amountToCompound := rewardAmount.Amount.Mul(percentToCompound).Quo(sdk.NewInt(100))
+func (k Keeper) CalculateCompoundAmount(rewardAmount sdk.Coin, percentToCompound uint64) math.Int {
+	amountToCompound := rewardAmount.Amount.Mul(math.NewInt(int64(percentToCompound))).Quo(sdk.NewInt(100))
 
 	return amountToCompound
 }

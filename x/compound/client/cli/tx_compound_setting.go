@@ -33,7 +33,7 @@ func CmdCreateCompoundSetting() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argFrequency, err := cast.ToInt32E(args[2])
+			argFrequency, err := cast.ToUint64E(args[2])
 			if err != nil {
 				return err
 			}
@@ -83,7 +83,7 @@ func CmdUpdateCompoundSetting() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argFrequency, err := cast.ToInt32E(args[2])
+			argFrequency, err := cast.ToUint64E(args[2])
 			if err != nil {
 				return err
 			}

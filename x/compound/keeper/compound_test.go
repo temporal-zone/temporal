@@ -211,11 +211,11 @@ func TestBuildCompoundActions(t *testing.T) {
 		ValidatorSetting: []*compTypes.ValidatorSetting{
 			{
 				ValidatorAddress:  "cosmosval1",
-				PercentToCompound: sdk.NewInt(10),
+				PercentToCompound: 10,
 			},
 			{
 				ValidatorAddress:  "cosmosval2",
-				PercentToCompound: sdk.NewInt(20),
+				PercentToCompound: 20,
 			},
 		},
 		AmountToRemain: sdk.NewCoin("uatom", sdk.NewInt(100000)),
@@ -236,11 +236,11 @@ func TestBuildCompoundActions(t *testing.T) {
 		ValidatorSetting: []*compTypes.ValidatorSetting{
 			{
 				ValidatorAddress:  "cosmosval1",
-				PercentToCompound: sdk.NewInt(80),
+				PercentToCompound: 80,
 			},
 			{
 				ValidatorAddress:  "cosmosval2",
-				PercentToCompound: sdk.NewInt(20),
+				PercentToCompound: 20,
 			},
 		},
 		AmountToRemain: sdk.NewCoin("uatom", sdk.NewInt(100000)),
@@ -262,11 +262,11 @@ func TestBuildCompoundActions(t *testing.T) {
 		ValidatorSetting: []*compTypes.ValidatorSetting{
 			{
 				ValidatorAddress:  "cosmosval1",
-				PercentToCompound: sdk.NewInt(80),
+				PercentToCompound: 80,
 			},
 			{
 				ValidatorAddress:  "cosmosval2",
-				PercentToCompound: sdk.NewInt(20),
+				PercentToCompound: 20,
 			},
 		},
 		AmountToRemain: sdk.NewCoin("uatom", sdk.NewInt(100000)),
@@ -407,37 +407,37 @@ func TestCalculateCompoundingAmount(t *testing.T) {
 	var tests = []struct {
 		name              string
 		rewardAmount      math.Int
-		percentToCompound math.Int
+		percentToCompound uint64
 		expectedAmount    math.Int
 	}{
 		{
 			name:              "Test case 1",
 			rewardAmount:      sdk.NewInt(100),
-			percentToCompound: sdk.NewInt(10),
+			percentToCompound: 10,
 			expectedAmount:    sdk.NewInt(10),
 		},
 		{
 			name:              "Test case 2",
 			rewardAmount:      sdk.NewInt(100),
-			percentToCompound: sdk.NewInt(30),
+			percentToCompound: 30,
 			expectedAmount:    sdk.NewInt(30),
 		},
 		{
 			name:              "Test case 3",
 			rewardAmount:      sdk.NewInt(200),
-			percentToCompound: sdk.NewInt(20),
+			percentToCompound: 20,
 			expectedAmount:    sdk.NewInt(40),
 		},
 		{
 			name:              "Test case 4",
 			rewardAmount:      sdk.NewInt(200),
-			percentToCompound: sdk.NewInt(0),
+			percentToCompound: 0,
 			expectedAmount:    sdk.NewInt(0),
 		},
 		{
 			name:              "Zero case",
 			rewardAmount:      sdk.NewInt(0),
-			percentToCompound: math.NewInt(50),
+			percentToCompound: 50,
 			expectedAmount:    math.NewInt(0),
 		},
 	}

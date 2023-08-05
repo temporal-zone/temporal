@@ -3,11 +3,14 @@ package temporal.compound;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
 
 option go_package = "github.com/temporal-zone/temporal/x/compound/types";
 
 message PreviousCompounding {
-  string delegator = 1;
+  option (cosmos.msg.v1.signer) = "delegator";
+  string delegator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   google.protobuf.Timestamp timestamp = 2 [
     (gogoproto.stdtime) = true,
     (gogoproto.nullable) = false
