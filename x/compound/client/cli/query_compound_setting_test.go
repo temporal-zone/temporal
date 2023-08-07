@@ -25,7 +25,7 @@ var _ = strconv.IntSize
 func networkWithCompoundSettingObjects(t *testing.T, n int) (*network.Network, []types.CompoundSetting) {
 	t.Helper()
 	cfg := network.DefaultConfig()
-	state := types.GenesisState{}
+	state := types.GenesisState{Params: types.DefaultParams()}
 	for i := 0; i < n; i++ {
 		compoundSetting := types.CompoundSetting{
 			Delegator: apptesting.GetRandomAddress().String(),

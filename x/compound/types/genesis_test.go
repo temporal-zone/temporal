@@ -38,6 +38,7 @@ func TestGenesisState_Validate(t *testing.T) {
 						Delegator: "1",
 					},
 				},
+				Params: types.DefaultParams(),
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,

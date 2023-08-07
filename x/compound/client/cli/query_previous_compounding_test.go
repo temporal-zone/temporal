@@ -24,7 +24,7 @@ var _ = strconv.IntSize
 func networkWithPreviousCompoundingObjects(t *testing.T, n int) (*network.Network, []types.PreviousCompounding) {
 	t.Helper()
 	cfg := network.DefaultConfig()
-	state := types.GenesisState{}
+	state := types.GenesisState{Params: types.DefaultParams()}
 	for i := 0; i < n; i++ {
 		previousCompounding := types.PreviousCompounding{
 			Delegator: strconv.Itoa(i),
