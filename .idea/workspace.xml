@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c11961e-57f9-4dbd-a335-d77d84ded210" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/static/openapi.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/static/openapi.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/proto/temporal/compound/params.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/params.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/keeper/keeper.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/keeper.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/x/compound/keeper/params.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/params.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/x/compound/keeper/params_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/params_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/x/compound/types/params.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/params.go" afterDir="false" />
@@ -58,17 +59,17 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
   }
 }</component>
-  <component name="RunManager" selected="Go Test.go test github.com/temporal-zone/temporal/x/compound/keeper">
-    <configuration name="TestListDelegationHistory/ByOffset in github.com/temporal-zone/temporal/x/record/client/cli" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Go Test.TestCheckFrequency in github.com/temporal-zone/temporal/x/compound/keeper">
+    <configuration name="TestCheckFrequency in github.com/temporal-zone/temporal/x/compound/keeper" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="temporal" />
-      <working_directory value="$PROJECT_DIR$/x/record/client/cli" />
+      <working_directory value="$PROJECT_DIR$/x/compound/keeper" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/temporal-zone/temporal/x/record/client/cli" />
+      <package value="github.com/temporal-zone/temporal/x/compound/keeper" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestListDelegationHistory\E$/^\QByOffset\E$" />
+      <pattern value="^\QTestCheckFrequency\E$" />
       <method v="2" />
     </configuration>
     <configuration name="TestShowCompoundSetting in github.com/temporal-zone/temporal/x/compound/client/cli" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -118,11 +119,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestCheckFrequency in github.com/temporal-zone/temporal/x/compound/keeper" />
         <item itemvalue="Go Test.go test github.com/temporal-zone/temporal/x/compound/keeper" />
         <item itemvalue="Go Test.TestShowCompoundSetting in github.com/temporal-zone/temporal/x/compound/client/cli" />
         <item itemvalue="Go Test.go test github.com/temporal-zone/temporal/x/record/client/cli" />
         <item itemvalue="Go Test.go test github.com/temporal-zone/temporal/x/compound/client/cli" />
-        <item itemvalue="Go Test.TestListDelegationHistory/ByOffset in github.com/temporal-zone/temporal/x/record/client/cli" />
       </list>
     </recent_temporary>
   </component>

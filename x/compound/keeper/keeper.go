@@ -59,13 +59,11 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// TODO: Change MinimumCompoundFrequency to be a module param and the test in msg_server_compound_setting_test to use the new param
-const MinimumCompoundFrequency = uint64(600)
-
 // CheckFrequency checks to make sure frequency should be no less than X seconds.
-func (k Keeper) CheckFrequency(onceEvery uint64) uint64 {
-	if onceEvery < MinimumCompoundFrequency {
-		return MinimumCompoundFrequency
+func (k Keeper) CheckFrequency(ctx sdk.Context, onceEvery uint64) uint64 {
+	minimumCompoundFrequency := k.MinimumCompoundFrequency(ctx)
+	if onceEvery < minimumCompoundFrequency {
+		return minimumCompoundFrequency
 	}
 
 	return onceEvery

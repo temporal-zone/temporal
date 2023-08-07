@@ -46671,6 +46671,9 @@ paths:
                   numberOfCompoundsPerBlock:
                     type: string
                     format: uint64
+                  minimumCompoundFrequency:
+                    type: string
+                    format: uint64
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -75887,6 +75890,9 @@ definitions:
       numberOfCompoundsPerBlock:
         type: string
         format: uint64
+      minimumCompoundFrequency:
+        type: string
+        format: uint64
     description: Params defines the parameters for the module.
   temporal.compound.PreviousCompounding:
     type: object
@@ -76054,6 +76060,9 @@ definitions:
         type: object
         properties:
           numberOfCompoundsPerBlock:
+            type: string
+            format: uint64
+          minimumCompoundFrequency:
             type: string
             format: uint64
     description: QueryParamsResponse is response type for the Query/Params RPC method.

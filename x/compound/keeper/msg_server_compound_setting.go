@@ -23,7 +23,7 @@ func (k msgServer) CreateCompoundSetting(goCtx context.Context, msg *types.MsgCr
 		Delegator:        msg.Delegator,
 		ValidatorSetting: msg.ValidatorSetting,
 		AmountToRemain:   msg.AmountToRemain,
-		Frequency:        k.CheckFrequency(msg.Frequency),
+		Frequency:        k.CheckFrequency(ctx, msg.Frequency),
 	}
 
 	k.SetCompoundSetting(
@@ -54,7 +54,7 @@ func (k msgServer) UpdateCompoundSetting(goCtx context.Context, msg *types.MsgUp
 		Delegator:        msg.Delegator,
 		ValidatorSetting: msg.ValidatorSetting,
 		AmountToRemain:   msg.AmountToRemain,
-		Frequency:        k.CheckFrequency(msg.Frequency),
+		Frequency:        k.CheckFrequency(ctx, msg.Frequency),
 	}
 
 	k.SetCompoundSetting(ctx, compoundSetting)

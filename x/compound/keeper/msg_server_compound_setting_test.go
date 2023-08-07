@@ -61,8 +61,8 @@ func TestCompoundSettingMsgServerUpdate(t *testing.T) {
 			require.NoError(t, err)
 
 			if tc.desc == "KeyNotFound" {
-				delete := &types.MsgDeleteCompoundSetting{Delegator: delegator}
-				_, err = srv.DeleteCompoundSetting(wctx, delete)
+				del := &types.MsgDeleteCompoundSetting{Delegator: delegator}
+				_, err = srv.DeleteCompoundSetting(wctx, del)
 				require.NoError(t, err)
 			}
 
@@ -109,8 +109,8 @@ func TestCompoundSettingMsgServerDelete(t *testing.T) {
 			require.NoError(t, err)
 
 			if tc.desc == "KeyNotFound" {
-				delete := &types.MsgDeleteCompoundSetting{Delegator: delegator}
-				_, err := srv.DeleteCompoundSetting(wctx, delete)
+				del := &types.MsgDeleteCompoundSetting{Delegator: delegator}
+				_, err := srv.DeleteCompoundSetting(wctx, del)
 				require.NoError(t, err)
 			}
 
@@ -146,15 +146,15 @@ func TestCheckFrequency(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-			k, _ := keepertest.CompoundKeeper(t)
+			k, ctx := keepertest.CompoundKeeper(t)
 
-			onceEvery := k.CheckFrequency(tc.request)
+			onceEvery := k.CheckFrequency(ctx, tc.request)
 
-			if tc.desc == "Under" {
-				require.GreaterOrEqual(t, onceEvery, uint64(600))
+			if tc.request < k.MinimumCompoundFrequency(ctx) {
+				require.GreaterOrEqual(t, onceEvery, k.MinimumCompoundFrequency(ctx))
 			}
 
-			if tc.desc == "Over" {
+			if tc.request > k.MinimumCompoundFrequency(ctx) {
 				require.Equal(t, onceEvery, tc.request)
 			}
 		})
