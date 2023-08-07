@@ -10,9 +10,6 @@ import (
 	"time"
 )
 
-// TODO: Change the amount of compoundings per block to be a module level param
-const numberOfCompounds = 100
-
 type StakingCompoundAction struct {
 	Delegator        string
 	ValidatorAddress string
@@ -24,7 +21,7 @@ type StakingCompoundAction struct {
 func (k Keeper) RunCompounding(ctx sdk.Context) error {
 
 	// TODO: Profile/Benchmark what 100, 1K, 10K, 100K of compounds in one block does to block time/other resource usage?
-	numberOfCompoundsTemp := numberOfCompounds
+	numberOfCompoundsTemp := k.NumberOfCompoundsPerBlock(ctx)
 	compSettings := k.GetAllCompoundSetting(ctx)
 
 	for _, compSetting := range compSettings {
