@@ -128,7 +128,6 @@ func TestCompoundSettingMsgServerDelete(t *testing.T) {
 	}
 }
 
-// TODO when minimumCompoundFrequency becomes a module level param, change this tests uint64(600) to test against the param.
 func TestCheckFrequency(t *testing.T) {
 	tests := []struct {
 		desc    string

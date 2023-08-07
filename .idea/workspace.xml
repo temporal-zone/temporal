@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c11961e-57f9-4dbd-a335-d77d84ded210" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/static/openapi.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docs/static/openapi.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/proto/temporal/compound/params.proto" beforeDir="false" afterPath="$PROJECT_DIR$/proto/temporal/compound/params.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/keeper.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/keeper.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/params.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/params.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/params_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/params_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/params.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/params.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/params.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/params.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
