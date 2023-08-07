@@ -46881,7 +46881,7 @@ paths:
                           timestamp:
                             type: string
                             format: date-time
-                          amount:
+                          balance:
                             type: object
                             properties:
                               denom:
@@ -47025,7 +47025,7 @@ paths:
                         timestamp:
                           type: string
                           format: date-time
-                        amount:
+                        balance:
                           type: object
                           properties:
                             denom:
@@ -76066,7 +76066,7 @@ definitions:
             timestamp:
               type: string
               format: date-time
-            amount:
+            balance:
               type: object
               properties:
                 denom:
@@ -76087,7 +76087,7 @@ definitions:
       timestamp:
         type: string
         format: date-time
-      amount:
+      balance:
         type: object
         properties:
           denom:
@@ -76120,7 +76120,7 @@ definitions:
                   timestamp:
                     type: string
                     format: date-time
-                  amount:
+                  balance:
                     type: object
                     properties:
                       denom:
@@ -76177,7 +76177,7 @@ definitions:
                 timestamp:
                   type: string
                   format: date-time
-                amount:
+                balance:
                   type: object
                   properties:
                     denom:
