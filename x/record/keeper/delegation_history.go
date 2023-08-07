@@ -180,10 +180,7 @@ func (k Keeper) PruneDelegationHistory(delegationHistory types.DelegationHistory
 			delegationHistoryNew.History = append(delegationHistoryNew.GetHistory(), delegationTimestamp)
 		}
 	}
-
-	//TODO: add "staking length benefit period" to a param store
-	//TODO: prune and compress if DelegationTimestamp is older than the "staking length benefit period"
-
+	
 	return delegationHistoryNew
 }
 
