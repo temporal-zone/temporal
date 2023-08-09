@@ -190,7 +190,7 @@ func (k Keeper) StakingCompoundAmount(delegations []distrTypes.DelegationDelegat
 func (k Keeper) ExtraCompoundAmount(cs compTypes.CompoundSetting, walletBalance sdk.Coin) sdk.Coin {
 	extraCompoundAmount := sdk.Coin{Denom: walletBalance.Denom, Amount: sdk.NewInt(0)}
 
-	if cs.AmountToRemain.IsNil() {
+	if !cs.AmountToRemain.IsValid() {
 		return extraCompoundAmount
 	}
 

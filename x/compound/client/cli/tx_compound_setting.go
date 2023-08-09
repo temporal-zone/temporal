@@ -29,10 +29,14 @@ func CmdCreateCompoundSetting() *cobra.Command {
 				argValidatorSettings = append(argValidatorSettings, &vs)
 			}
 
-			argAmountToRemain, err := sdk.ParseCoinNormalized(args[1])
-			if err != nil {
-				return err
+			argAmountToRemain := sdk.Coin{}
+			if args[1] != "" {
+				argAmountToRemain, err = sdk.ParseCoinNormalized(args[1])
+				if err != nil {
+					return err
+				}
 			}
+
 			argFrequency, err := cast.ToUint64E(args[2])
 			if err != nil {
 				return err
@@ -79,10 +83,14 @@ func CmdUpdateCompoundSetting() *cobra.Command {
 				argValidatorSettings = append(argValidatorSettings, &vs)
 			}
 
-			argAmountToRemain, err := sdk.ParseCoinNormalized(args[1])
-			if err != nil {
-				return err
+			argAmountToRemain := sdk.Coin{}
+			if args[1] != "" {
+				argAmountToRemain, err = sdk.ParseCoinNormalized(args[1])
+				if err != nil {
+					return err
+				}
 			}
+
 			argFrequency, err := cast.ToUint64E(args[2])
 			if err != nil {
 				return err
