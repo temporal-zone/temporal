@@ -24,7 +24,9 @@ func TestCreateCompoundSetting(t *testing.T) {
 	val := net.Validators[0]
 	ctx := val.ClientCtx
 
-	fields := []string{"null", "10token", "111"}
+	valSetting := fmt.Sprintf("[{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]", val.ValAddress.String())
+
+	fields := []string{valSetting, "10token", "111"}
 	tests := []struct {
 		desc        string
 		idDelegator string
@@ -71,7 +73,9 @@ func TestUpdateCompoundSetting(t *testing.T) {
 	val := net.Validators[0]
 	ctx := val.ClientCtx
 
-	fields := []string{"null", "10token", "111"}
+	valSetting := fmt.Sprintf("[{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]", val.ValAddress.String())
+
+	fields := []string{valSetting, "10token", "111"}
 	common := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -141,7 +145,9 @@ func TestDeleteCompoundSetting(t *testing.T) {
 	val := net.Validators[0]
 	ctx := val.ClientCtx
 
-	fields := []string{"null", "10token", "111"}
+	valSetting := fmt.Sprintf("[{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]", val.ValAddress.String())
+
+	fields := []string{valSetting, "10token", "111"}
 	common := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),

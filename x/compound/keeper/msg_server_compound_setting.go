@@ -16,7 +16,12 @@ func (k msgServer) CreateCompoundSetting(goCtx context.Context, msg *types.MsgCr
 		msg.Delegator,
 	)
 	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "compoundSettings already set, do an update instead")
+	}
+
+	err := k.ValidateValidatorSettings(ctx, msg.ValidatorSetting)
+	if err != nil {
+		return nil, err
 	}
 
 	var compoundSetting = types.CompoundSetting{
@@ -42,10 +47,15 @@ func (k msgServer) UpdateCompoundSetting(goCtx context.Context, msg *types.MsgUp
 		msg.Delegator,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "CompoundSettings not found, create them first")
 	}
 
-	// Checks if the the msg delegator is the same as the current owner
+	err := k.ValidateValidatorSettings(ctx, msg.ValidatorSetting)
+	if err != nil {
+		return nil, err
+	}
+
+	// Checks if the msg delegator is the same as the current owner
 	if msg.Delegator != valFound.Delegator {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
@@ -71,10 +81,10 @@ func (k msgServer) DeleteCompoundSetting(goCtx context.Context, msg *types.MsgDe
 		msg.Delegator,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "CompoundSetting not found")
 	}
 
-	// Checks if the the msg delegator is the same as the current owner
+	// Checks if the msg delegator is the same as the current owner
 	if msg.Delegator != valFound.Delegator {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
@@ -85,4 +95,36 @@ func (k msgServer) DeleteCompoundSetting(goCtx context.Context, msg *types.MsgDe
 	)
 
 	return &types.MsgDeleteCompoundSettingResponse{}, nil
+}
+
+// validateValidatorSettings makes sure ValidatorSetting is valid
+func (k msgServer) ValidateValidatorSettings(ctx sdk.Context, validatorSetting []*types.ValidatorSetting) error {
+	if validatorSetting == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validatorSetting can not be empty")
+	}
+
+	totalPercentToCompound := uint64(0)
+	for _, valSetting := range validatorSetting {
+		if valSetting.GetPercentToCompound() < 1 || valSetting.GetPercentToCompound() > 100 {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "percentToCompound can not be less than 1 or greater than 100")
+		}
+
+		totalPercentToCompound += valSetting.GetPercentToCompound()
+		if totalPercentToCompound < 1 || totalPercentToCompound > 100 {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "total percentToCompound across all ValidatorSetting can not be less than 1 or greater than 100")
+		}
+
+		valAddress, err := sdk.ValAddressFromBech32(valSetting.ValidatorAddress)
+		if err != nil {
+			return err
+		}
+
+		_, found := k.stakingKeeper.GetValidator(ctx, valAddress)
+
+		if !found {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "can not find validator")
+		}
+	}
+
+	return nil
 }

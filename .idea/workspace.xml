@@ -6,9 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="2c11961e-57f9-4dbd-a335-d77d84ded210" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/query_previous_compounding_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/query_previous_compounding_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/types/genesis_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/types/genesis_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/record/client/cli/query_delegation_history_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/record/client/cli/query_delegation_history_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/x/record/keeper/query_delegation_history.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/record/keeper/query_delegation_history.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,8 +60,20 @@
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
   }
 }</component>
-  <component name="RunManager" selected="Go Test.go test github.com/temporal-zone/temporal/x/compound/client/cli">
-    <configuration name="TestCheckFrequency in github.com/temporal-zone/temporal/x/compound/keeper" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Go Test.TestRunCompounding/ValidValidatorSettings in github.com/temporal-zone/temporal/x/compound/keeper">
+    <configuration name="TestCreateCompoundSetting/valid in github.com/temporal-zone/temporal/x/compound/client/cli" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="temporal" />
+      <working_directory value="$PROJECT_DIR$/x/compound/client/cli" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/temporal-zone/temporal/x/compound/client/cli" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestCreateCompoundSetting\E$/^\Qvalid\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestRunCompounding in github.com/temporal-zone/temporal/x/compound/keeper" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="temporal" />
       <working_directory value="$PROJECT_DIR$/x/compound/keeper" />
       <root_directory value="$PROJECT_DIR$" />
@@ -65,31 +82,31 @@
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestCheckFrequency\E$" />
+      <pattern value="^\QTestRunCompounding\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestGenesisState_Validate/duplicated_compoundSetting in github.com/temporal-zone/temporal/x/compound/types" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestRunCompounding/ValidValidatorSettings in github.com/temporal-zone/temporal/x/compound/keeper" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="temporal" />
-      <working_directory value="$PROJECT_DIR$/x/compound/types" />
+      <working_directory value="$PROJECT_DIR$/x/compound/keeper" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/temporal-zone/temporal/x/compound/types" />
+      <package value="github.com/temporal-zone/temporal/x/compound/keeper" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestGenesisState_Validate\E$/^\Qduplicated_compoundSetting\E$" />
+      <pattern value="^\QTestRunCompounding\E$/^\QValidValidatorSettings\E$" />
       <method v="2" />
     </configuration>
-    <configuration name="TestGenesisState_Validate/valid_genesis_state in github.com/temporal-zone/temporal/x/compound/types" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+    <configuration name="TestRunCompounding/no_compounding_--_invalid_validatorSettings in github.com/temporal-zone/temporal/x/compound/keeper" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="temporal" />
-      <working_directory value="$PROJECT_DIR$/x/compound/types" />
+      <working_directory value="$PROJECT_DIR$/x/compound/keeper" />
       <root_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/temporal-zone/temporal/x/compound/types" />
+      <package value="github.com/temporal-zone/temporal/x/compound/keeper" />
       <directory value="$PROJECT_DIR$" />
       <filePath value="$PROJECT_DIR$" />
       <framework value="gotest" />
-      <pattern value="^\QTestGenesisState_Validate\E$/^\Qvalid_genesis_state\E$" />
+      <pattern value="^\QTestRunCompounding\E$/^\Qno_compounding_--_invalid_validatorSettings\E$" />
       <method v="2" />
     </configuration>
     <configuration name="go test github.com/temporal-zone/temporal/x/compound/client/cli" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -103,24 +120,13 @@
       <framework value="gotest" />
       <method v="2" />
     </configuration>
-    <configuration name="go test github.com/temporal-zone/temporal/x/compound/types" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="temporal" />
-      <working_directory value="$PROJECT_DIR$/x/compound/types" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="github.com/temporal-zone/temporal/x/compound/types" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestRunCompounding/ValidValidatorSettings in github.com/temporal-zone/temporal/x/compound/keeper" />
+        <item itemvalue="Go Test.TestRunCompounding in github.com/temporal-zone/temporal/x/compound/keeper" />
         <item itemvalue="Go Test.go test github.com/temporal-zone/temporal/x/compound/client/cli" />
-        <item itemvalue="Go Test.TestGenesisState_Validate/duplicated_compoundSetting in github.com/temporal-zone/temporal/x/compound/types" />
-        <item itemvalue="Go Test.TestGenesisState_Validate/valid_genesis_state in github.com/temporal-zone/temporal/x/compound/types" />
-        <item itemvalue="Go Test.go test github.com/temporal-zone/temporal/x/compound/types" />
-        <item itemvalue="Go Test.TestCheckFrequency in github.com/temporal-zone/temporal/x/compound/keeper" />
+        <item itemvalue="Go Test.TestCreateCompoundSetting/valid in github.com/temporal-zone/temporal/x/compound/client/cli" />
+        <item itemvalue="Go Test.TestRunCompounding/no_compounding_--_invalid_validatorSettings in github.com/temporal-zone/temporal/x/compound/keeper" />
       </list>
     </recent_temporary>
   </component>
