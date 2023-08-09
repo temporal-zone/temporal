@@ -2,14 +2,30 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
+	sdkmath "cosmossdk.io/math"
+	"fmt"
+	tmcli "github.com/cometbft/cometbft/libs/cli"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	distrTypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	stakingCli "github.com/cosmos/cosmos-sdk/x/staking/client/cli"
+	stakingTypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/require"
 	"github.com/temporal-zone/temporal/app/apptesting"
+	"github.com/temporal-zone/temporal/x/compound/client/cli"
 	"github.com/temporal-zone/temporal/x/compound/keeper"
 	compTypes "github.com/temporal-zone/temporal/x/compound/types"
+	recordCli "github.com/temporal-zone/temporal/x/record/client/cli"
+	recordTypes "github.com/temporal-zone/temporal/x/record/types"
+	"strconv"
 	"testing"
 	"time"
+
+	"github.com/temporal-zone/temporal/testutil/network"
+	"github.com/temporal-zone/temporal/x/compound/types"
+
+	compoundCli "github.com/temporal-zone/temporal/x/compound/client/cli"
 )
 
 func TestShouldCompoundingHappen(t *testing.T) {
@@ -445,5 +461,156 @@ func TestCalculateCompoundingAmount(t *testing.T) {
 		if !result.Sub(test.expectedAmount).IsZero() {
 			t.Errorf("Test case %s failed: expected %s but got %s", test.name, test.expectedAmount, result)
 		}
+	}
+}
+
+func networkWithCustomParams(t *testing.T) *network.Network {
+	t.Helper()
+	cfg := network.DefaultConfig()
+	state := types.GenesisState{Params: types.NewParams(uint64(100), uint64(5))}
+	buf, err := cfg.Codec.MarshalJSON(&state)
+	require.NoError(t, err)
+	cfg.GenesisState[types.ModuleName] = buf
+	return network.New(t, cfg)
+}
+
+// TestRunCompounding writes a CompoundSetting to state and waits the minimumCompoundFrequency and checks if the compound happened
+func TestRunCompounding(t *testing.T) {
+	net := networkWithCustomParams(t)
+	val := net.Validators[0]
+	ctx := val.ClientCtx
+
+	request := func(next []byte, offset, limit uint64, total bool) []string {
+		args := []string{
+			fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+		}
+		if next == nil {
+			args = append(args, fmt.Sprintf("--%s=%d", flags.FlagOffset, offset))
+		} else {
+			args = append(args, fmt.Sprintf("--%s=%s", flags.FlagPageKey, next))
+		}
+		args = append(args, fmt.Sprintf("--%s=%d", flags.FlagLimit, limit))
+		if total {
+			args = append(args, fmt.Sprintf("--%s", flags.FlagCountTotal))
+		}
+		return args
+	}
+
+	//Get existing DelegationHistory objects from state
+	queryArgs := request(nil, 0, uint64(10000), true)
+	out, err := clitestutil.ExecTestCLICmd(ctx, recordCli.CmdListDelegationHistory(), queryArgs)
+	require.NoError(t, err)
+	var currentDelHistoryList recordTypes.QueryAllDelegationHistoryResponse
+	require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &currentDelHistoryList))
+
+	//Get validators in test network
+	out, err = clitestutil.ExecTestCLICmd(ctx, stakingCli.GetCmdQueryValidators(), queryArgs)
+	require.NoError(t, err)
+	var respValidators stakingTypes.QueryValidatorsResponse
+	require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &respValidators))
+
+	// When a validator is created they self delegate some amount so there should be one of each of the below for each validator
+	require.Equal(t, len(currentDelHistoryList.GetDelegationHistory()), len(respValidators.GetValidators()))
+
+	for i, _ := range respValidators.GetValidators() {
+		require.Equal(t, len(currentDelHistoryList.GetDelegationHistory()[i].GetHistory()), 1)
+	}
+
+	//Get existing PreviousCompounding objects from state
+	out, err = clitestutil.ExecTestCLICmd(ctx, compoundCli.CmdListPreviousCompounding(), queryArgs)
+	require.NoError(t, err)
+	var currentPrevCompoundList compTypes.QueryAllPreviousCompoundingResponse
+	require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &currentPrevCompoundList))
+
+	//Since no CompoundSettings are present so far, there should not be any PreviousCompoundings
+	require.Equal(t, len(currentPrevCompoundList.GetPreviousCompounding()), 0)
+
+	valSetting := fmt.Sprintf("[{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]", val.ValAddress.String())
+
+	broadcastArgs := []string{
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
+	}
+
+	tests := []struct {
+		desc        string
+		idDelegator string
+		fields      []string
+
+		args []string
+		err  error
+		code uint32
+	}{
+		{
+			desc:        "InvalidValidatorSettings",
+			idDelegator: strconv.Itoa(0),
+			fields:      []string{"null", "10token", "600"},
+			code:        18,
+			args:        broadcastArgs,
+		},
+		{
+			desc:        "ValidValidatorSettings",
+			idDelegator: strconv.Itoa(1),
+			fields:      []string{valSetting, "", "5"},
+			code:        0,
+			args:        broadcastArgs,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.desc, func(t *testing.T) {
+			require.NoError(t, net.WaitForNextBlock())
+
+			var args []string
+			args = append(args, tc.fields...)
+			args = append(args, tc.args...)
+			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdCreateCompoundSetting(), args)
+			if tc.err != nil {
+				require.ErrorIs(t, err, tc.err)
+				return
+			}
+			require.NoError(t, err)
+
+			var resp sdk.TxResponse
+			require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
+			require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, tc.code))
+
+			net.WaitForNextBlock()
+
+			if tc.desc == "ValidValidatorSettings" {
+				//Get existing PreviousCompounding objects from state, 1 should exist
+				args = request(nil, 0, uint64(10000), true)
+				out, err = clitestutil.ExecTestCLICmd(ctx, compoundCli.CmdListPreviousCompounding(), args)
+				require.NoError(t, err)
+				var currentPrevCompoundListStart compTypes.QueryAllPreviousCompoundingResponse
+				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &currentPrevCompoundListStart))
+				require.Equal(t, len(currentPrevCompoundListStart.GetPreviousCompounding()), 1)
+
+				height, err := net.LatestHeight()
+				require.NoError(t, err)
+
+				// ~2 seconds blocks
+				_, err = net.WaitForHeightWithTimeout(5+height, time.Second*15)
+				require.NoError(t, err)
+
+				//Get existing DelegationHistory objects from state
+				args = request(nil, 0, uint64(10000), true)
+				out, err = clitestutil.ExecTestCLICmd(ctx, recordCli.CmdListDelegationHistory(), args)
+				require.NoError(t, err)
+				var currentDelegetaionHistoryList recordTypes.QueryAllDelegationHistoryResponse
+				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &currentDelegetaionHistoryList))
+
+				//There should only be 1 DelegationHistory object with multiple DelegationTimestamps
+				delhistory := currentDelegetaionHistoryList.GetDelegationHistory()
+				require.Equal(t, len(delhistory), 1)
+
+				prevComps := delhistory[0].GetHistory()
+				require.Equal(t, len(prevComps), 4)
+
+				//The DelegationHistory should match the CompoundSetting that was just created
+				require.Equal(t, delhistory[0].Address, val.Address.String())
+			}
+		})
 	}
 }
