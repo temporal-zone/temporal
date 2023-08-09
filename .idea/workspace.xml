@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2c11961e-57f9-4dbd-a335-d77d84ded210" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/client/cli/tx_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/compound_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/compound_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/compound/keeper/msg_server_compound_setting_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/record/client/cli/query_delegation_history_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/record/client/cli/query_delegation_history_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/x/record/keeper/query_delegation_history.go" beforeDir="false" afterPath="$PROJECT_DIR$/x/record/keeper/query_delegation_history.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
