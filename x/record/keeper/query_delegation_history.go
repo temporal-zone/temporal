@@ -16,7 +16,7 @@ func (k Keeper) DelegationHistoryAll(goCtx context.Context, req *types.QueryAllD
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var delegationHistorys []types.DelegationHistory
+	var delegationHistoryList []types.DelegationHistory
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
@@ -28,7 +28,7 @@ func (k Keeper) DelegationHistoryAll(goCtx context.Context, req *types.QueryAllD
 			return err
 		}
 
-		delegationHistorys = append(delegationHistorys, delegationHistory)
+		delegationHistoryList = append(delegationHistoryList, delegationHistory)
 		return nil
 	})
 
@@ -36,7 +36,7 @@ func (k Keeper) DelegationHistoryAll(goCtx context.Context, req *types.QueryAllD
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllDelegationHistoryResponse{DelegationHistory: delegationHistorys, Pagination: pageRes}, nil
+	return &types.QueryAllDelegationHistoryResponse{DelegationHistory: delegationHistoryList, Pagination: pageRes}, nil
 }
 
 func (k Keeper) DelegationHistory(goCtx context.Context, req *types.QueryGetDelegationHistoryRequest) (*types.QueryGetDelegationHistoryResponse, error) {

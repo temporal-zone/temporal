@@ -135,7 +135,7 @@ func TestListDelegationHistory(t *testing.T) {
 	var resp recordTypes.QueryAllDelegationHistoryResponse
 	require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 
-	//Get number of validators in test network
+	//Get validators in test network
 	out, err = clitestutil.ExecTestCLICmd(ctx, stakingCli.GetCmdQueryValidators(), args)
 	require.NoError(t, err)
 	var respValidators stakingTypes.QueryValidatorsResponse
