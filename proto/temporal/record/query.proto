@@ -16,17 +16,17 @@ service Query {
   
   // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/temporal-zone/temporal/record/params";
+    option (google.api.http).get = "/temporal/record/params";
   
   }
   
   // Queries a list of DelegationHistory items.
   rpc DelegationHistory    (QueryGetDelegationHistoryRequest) returns (QueryGetDelegationHistoryResponse) {
-    option (google.api.http).get = "/temporal-zone/temporal/record/delegation_history/{address}";
+    option (google.api.http).get = "/temporal/record/delegation_history/{address}";
   
   }
   rpc DelegationHistoryAll (QueryAllDelegationHistoryRequest) returns (QueryAllDelegationHistoryResponse) {
-    option (google.api.http).get = "/temporal-zone/temporal/record/delegation_history";
+    option (google.api.http).get = "/temporal/record/delegation_history";
   
   }
 }

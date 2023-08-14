@@ -46864,7 +46864,7 @@ paths:
           type: string
       tags:
         - Query
-  /temporal-zone/temporal/record/delegation_history:
+  /temporal/record/delegation_history:
     get:
       operationId: TemporalRecordDelegationHistoryAll
       responses:
@@ -47009,7 +47009,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /temporal-zone/temporal/record/delegation_history/{address}:
+  /temporal/record/delegation_history/{address}:
     get:
       summary: Queries a list of DelegationHistory items.
       operationId: TemporalRecordDelegationHistory
@@ -47073,7 +47073,7 @@ paths:
           type: string
       tags:
         - Query
-  /temporal-zone/temporal/record/params:
+  /temporal/record/params:
     get:
       summary: Parameters queries the parameters of the module.
       operationId: TemporalRecordParams

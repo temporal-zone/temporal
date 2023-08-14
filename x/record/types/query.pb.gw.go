@@ -321,11 +321,11 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"temporal-zone", "temporal", "record", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"temporal", "record", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_DelegationHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"temporal-zone", "temporal", "record", "delegation_history", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DelegationHistory_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"temporal", "record", "delegation_history", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_DelegationHistoryAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"temporal-zone", "temporal", "record", "delegation_history"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DelegationHistoryAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"temporal", "record", "delegation_history"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
