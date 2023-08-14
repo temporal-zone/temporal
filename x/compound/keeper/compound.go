@@ -16,7 +16,6 @@ type StakingCompoundAction struct {
 	Balance          sdk.Coin
 }
 
-// TODO: RunCompounding needs test coverage
 // RunCompounding gets all CompoundSettings and attempts to Compound them
 func (k Keeper) RunCompounding(ctx sdk.Context) error {
 
@@ -25,7 +24,7 @@ func (k Keeper) RunCompounding(ctx sdk.Context) error {
 	compSettings := k.GetAllCompoundSetting(ctx)
 
 	for _, compSetting := range compSettings {
-		if !k.ShouldCompoundingHappen(ctx, compSetting, ctx.BlockTime()) {
+		if !k.ShouldCompoundHappen(ctx, compSetting, ctx.BlockTime()) {
 			continue
 		}
 
@@ -92,17 +91,17 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) error {
 	return nil
 }
 
-// ShouldCompoundingHappen compares the last time a compounding happened
-func (k Keeper) ShouldCompoundingHappen(ctx sdk.Context, cs compTypes.CompoundSetting, blockTime time.Time) bool {
-	previousCompounding, found := k.GetPreviousCompounding(ctx, cs.Delegator)
+// ShouldCompoundHappen compares the last time a compounding happened
+func (k Keeper) ShouldCompoundHappen(ctx sdk.Context, cs compTypes.CompoundSetting, blockTime time.Time) bool {
+	previousCompound, found := k.GetPreviousCompound(ctx, cs.Delegator)
 	if !found {
 		return true
 	}
 
 	duration := time.Duration(cs.Frequency) * time.Second
-	nextCompoundingTime := previousCompounding.Timestamp.Add(duration)
+	nextCompoundTime := previousCompound.Timestamp.Add(duration)
 
-	return blockTime.After(nextCompoundingTime)
+	return blockTime.After(nextCompoundTime)
 }
 
 // Delegate is a helper method that delegates
@@ -122,7 +121,7 @@ func Delegate(ctx sdk.Context, k Keeper, compoundAction StakingCompoundAction, a
 		return err
 	}
 
-	k.RecordCompounding(ctx, address.String(), ctx.BlockTime())
+	k.RecordCompound(ctx, address.String(), ctx.BlockTime())
 
 	return nil
 }
@@ -201,14 +200,14 @@ func (k Keeper) ExtraCompoundAmount(cs compTypes.CompoundSetting, walletBalance 
 	return extraCompoundAmount
 }
 
-// RecordCompounding records the compounding timestamp
-func (k Keeper) RecordCompounding(ctx sdk.Context, address string, blockTime time.Time) {
-	value, _ := k.GetPreviousCompounding(ctx, address)
+// RecordCompound records the compounding timestamp
+func (k Keeper) RecordCompound(ctx sdk.Context, address string, blockTime time.Time) {
+	value, _ := k.GetPreviousCompound(ctx, address)
 
 	value.Delegator = address
 	value.Timestamp = blockTime
 
-	k.SetPreviousCompounding(ctx, value)
+	k.SetPreviousCompound(ctx, value)
 }
 
 // CalculateCompoundAmount calcs the compounding amount
@@ -218,7 +217,7 @@ func (k Keeper) CalculateCompoundAmount(rewardAmount sdk.Coin, percentToCompound
 	return amountToCompound
 }
 
-// DelegationTotalRewards the total rewards accrued by a each validator
+// DelegationTotalRewards the total rewards accrued by each validator
 func (k Keeper) DelegationTotalRewards(ctx sdk.Context, delegator string) ([]distrTypes.DelegationDelegatorReward, error) {
 	if delegator == "" {
 		return nil, errors.New("empty delegator address")

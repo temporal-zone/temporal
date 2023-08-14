@@ -5,7 +5,7 @@ package temporal.compound;
 import "gogoproto/gogo.proto";
 import "temporal/compound/params.proto";
 import "temporal/compound/compound_setting.proto";
-import "temporal/compound/previous_compounding.proto";
+import "temporal/compound/previous_compound.proto";
 
 option go_package = "github.com/temporal-zone/temporal/x/compound/types";
 
@@ -13,6 +13,6 @@ option go_package = "github.com/temporal-zone/temporal/x/compound/types";
 message GenesisState {
            Params              params                  = 1 [(gogoproto.nullable) = false];
   repeated CompoundSetting     compoundSettingList     = 2 [(gogoproto.nullable) = false];
-  repeated PreviousCompounding previousCompoundingList = 3 [(gogoproto.nullable) = false];
+  repeated PreviousCompound    previousCompoundList    = 3 [(gogoproto.nullable) = false];
 }
 

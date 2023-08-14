@@ -30,7 +30,7 @@ func TestGenesisState_Validate(t *testing.T) {
 						Delegator: "1",
 					},
 				},
-				PreviousCompoundingList: []types.PreviousCompounding{
+				PreviousCompoundList: []types.PreviousCompound{
 					{
 						Delegator: "0",
 					},
@@ -58,9 +58,9 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid: false,
 		},
 		{
-			desc: "duplicated previousCompounding",
+			desc: "duplicated previousCompound",
 			genState: &types.GenesisState{
-				PreviousCompoundingList: []types.PreviousCompounding{
+				PreviousCompoundList: []types.PreviousCompound{
 					{
 						Delegator: "0",
 					},

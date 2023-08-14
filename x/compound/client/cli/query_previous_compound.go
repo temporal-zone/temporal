@@ -8,10 +8,10 @@ import (
 	"github.com/temporal-zone/temporal/x/compound/types"
 )
 
-func CmdListPreviousCompounding() *cobra.Command {
+func CmdListPreviousCompound() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-previous-compounding",
-		Short: "list all PreviousCompounding",
+		Use:   "list-previous-compound",
+		Short: "list all PreviousCompound",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -25,11 +25,11 @@ func CmdListPreviousCompounding() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllPreviousCompoundingRequest{
+			params := &types.QueryAllPreviousCompoundRequest{
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.PreviousCompoundingAll(cmd.Context(), params)
+			res, err := queryClient.PreviousCompoundAll(cmd.Context(), params)
 			if err != nil {
 				return err
 			}
@@ -44,10 +44,10 @@ func CmdListPreviousCompounding() *cobra.Command {
 	return cmd
 }
 
-func CmdShowPreviousCompounding() *cobra.Command {
+func CmdShowPreviousCompound() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-previous-compounding [delegator]",
-		Short: "shows a PreviousCompounding",
+		Use:   "show-previous-compound [delegator]",
+		Short: "shows a PreviousCompound",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -59,11 +59,11 @@ func CmdShowPreviousCompounding() *cobra.Command {
 
 			argDelegator := args[0]
 
-			params := &types.QueryGetPreviousCompoundingRequest{
+			params := &types.QueryGetPreviousCompoundRequest{
 				Delegator: argDelegator,
 			}
 
-			res, err := queryClient.PreviousCompounding(cmd.Context(), params)
+			res, err := queryClient.PreviousCompound(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

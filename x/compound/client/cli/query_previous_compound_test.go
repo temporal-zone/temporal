@@ -21,25 +21,25 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func networkWithPreviousCompoundingObjects(t *testing.T, n int) (*network.Network, []types.PreviousCompounding) {
+func networkWithPreviousCompoundObjects(t *testing.T, n int) (*network.Network, []types.PreviousCompound) {
 	t.Helper()
 	cfg := network.DefaultConfig()
 	state := types.GenesisState{Params: types.DefaultParams()}
 	for i := 0; i < n; i++ {
-		previousCompounding := types.PreviousCompounding{
+		previousCompound := types.PreviousCompound{
 			Delegator: strconv.Itoa(i),
 		}
-		nullify.Fill(&previousCompounding)
-		state.PreviousCompoundingList = append(state.PreviousCompoundingList, previousCompounding)
+		nullify.Fill(&previousCompound)
+		state.PreviousCompoundList = append(state.PreviousCompoundList, previousCompound)
 	}
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
-	return network.New(t, cfg), state.PreviousCompoundingList
+	return network.New(t, cfg), state.PreviousCompoundList
 }
 
-func TestShowPreviousCompounding(t *testing.T) {
-	net, objs := networkWithPreviousCompoundingObjects(t, 2)
+func TestShowPreviousCompound(t *testing.T) {
+	net, objs := networkWithPreviousCompoundObjects(t, 2)
 
 	ctx := net.Validators[0].ClientCtx
 	common := []string{
@@ -51,7 +51,7 @@ func TestShowPreviousCompounding(t *testing.T) {
 
 		args []string
 		err  error
-		obj  types.PreviousCompounding
+		obj  types.PreviousCompound
 	}{
 		{
 			desc:        "found",
@@ -74,27 +74,27 @@ func TestShowPreviousCompounding(t *testing.T) {
 				tc.idDelegator,
 			}
 			args = append(args, tc.args...)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowPreviousCompounding(), args)
+			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdShowPreviousCompound(), args)
 			if tc.err != nil {
 				stat, ok := status.FromError(tc.err)
 				require.True(t, ok)
 				require.ErrorIs(t, stat.Err(), tc.err)
 			} else {
 				require.NoError(t, err)
-				var resp types.QueryGetPreviousCompoundingResponse
+				var resp types.QueryGetPreviousCompoundResponse
 				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-				require.NotNil(t, resp.PreviousCompounding)
+				require.NotNil(t, resp.PreviousCompound)
 				require.Equal(t,
 					nullify.Fill(&tc.obj),
-					nullify.Fill(&resp.PreviousCompounding),
+					nullify.Fill(&resp.PreviousCompound),
 				)
 			}
 		})
 	}
 }
 
-func TestListPreviousCompounding(t *testing.T) {
-	net, objs := networkWithPreviousCompoundingObjects(t, 5)
+func TestListPreviousCompound(t *testing.T) {
+	net, objs := networkWithPreviousCompoundObjects(t, 5)
 
 	ctx := net.Validators[0].ClientCtx
 	request := func(next []byte, offset, limit uint64, total bool) []string {
@@ -116,14 +116,14 @@ func TestListPreviousCompounding(t *testing.T) {
 		step := 2
 		for i := 0; i < len(objs); i += step {
 			args := request(nil, uint64(i), uint64(step), false)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListPreviousCompounding(), args)
+			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListPreviousCompound(), args)
 			require.NoError(t, err)
-			var resp types.QueryAllPreviousCompoundingResponse
+			var resp types.QueryAllPreviousCompoundResponse
 			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-			require.LessOrEqual(t, len(resp.PreviousCompounding), step)
+			require.LessOrEqual(t, len(resp.PreviousCompound), step)
 			require.Subset(t,
 				nullify.Fill(objs),
-				nullify.Fill(resp.PreviousCompounding),
+				nullify.Fill(resp.PreviousCompound),
 			)
 		}
 	})
@@ -132,29 +132,29 @@ func TestListPreviousCompounding(t *testing.T) {
 		var next []byte
 		for i := 0; i < len(objs); i += step {
 			args := request(next, 0, uint64(step), false)
-			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListPreviousCompounding(), args)
+			out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListPreviousCompound(), args)
 			require.NoError(t, err)
-			var resp types.QueryAllPreviousCompoundingResponse
+			var resp types.QueryAllPreviousCompoundResponse
 			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
-			require.LessOrEqual(t, len(resp.PreviousCompounding), step)
+			require.LessOrEqual(t, len(resp.PreviousCompound), step)
 			require.Subset(t,
 				nullify.Fill(objs),
-				nullify.Fill(resp.PreviousCompounding),
+				nullify.Fill(resp.PreviousCompound),
 			)
 			next = resp.Pagination.NextKey
 		}
 	})
 	t.Run("Total", func(t *testing.T) {
 		args := request(nil, 0, uint64(len(objs)), true)
-		out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListPreviousCompounding(), args)
+		out, err := clitestutil.ExecTestCLICmd(ctx, cli.CmdListPreviousCompound(), args)
 		require.NoError(t, err)
-		var resp types.QueryAllPreviousCompoundingResponse
+		var resp types.QueryAllPreviousCompoundResponse
 		require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &resp))
 		require.NoError(t, err)
 		require.Equal(t, len(objs), int(resp.Pagination.Total))
 		require.ElementsMatch(t,
 			nullify.Fill(objs),
-			nullify.Fill(resp.PreviousCompounding),
+			nullify.Fill(resp.PreviousCompound),
 		)
 	})
 }

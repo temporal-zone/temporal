@@ -18,33 +18,33 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func TestPreviousCompoundingQuerySingle(t *testing.T) {
-	keeper, ctx := keepertest.CompoundKeeper(t)
+func TestPreviousCompoundQuerySingle(t *testing.T) {
+	compKeeper, ctx := keepertest.CompoundKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
-	msgs := createNPreviousCompounding(keeper, ctx, 2)
+	msgs := createNPreviousCompound(compKeeper, ctx, 2)
 	tests := []struct {
 		desc     string
-		request  *types.QueryGetPreviousCompoundingRequest
-		response *types.QueryGetPreviousCompoundingResponse
+		request  *types.QueryGetPreviousCompoundRequest
+		response *types.QueryGetPreviousCompoundResponse
 		err      error
 	}{
 		{
 			desc: "First",
-			request: &types.QueryGetPreviousCompoundingRequest{
+			request: &types.QueryGetPreviousCompoundRequest{
 				Delegator: msgs[0].Delegator,
 			},
-			response: &types.QueryGetPreviousCompoundingResponse{PreviousCompounding: msgs[0]},
+			response: &types.QueryGetPreviousCompoundResponse{PreviousCompound: msgs[0]},
 		},
 		{
 			desc: "Second",
-			request: &types.QueryGetPreviousCompoundingRequest{
+			request: &types.QueryGetPreviousCompoundRequest{
 				Delegator: msgs[1].Delegator,
 			},
-			response: &types.QueryGetPreviousCompoundingResponse{PreviousCompounding: msgs[1]},
+			response: &types.QueryGetPreviousCompoundResponse{PreviousCompound: msgs[1]},
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.QueryGetPreviousCompoundingRequest{
+			request: &types.QueryGetPreviousCompoundRequest{
 				Delegator: strconv.Itoa(100000),
 			},
 			err: status.Error(codes.NotFound, "not found"),
@@ -56,7 +56,7 @@ func TestPreviousCompoundingQuerySingle(t *testing.T) {
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
-			response, err := keeper.PreviousCompounding(wctx, tc.request)
+			response, err := compKeeper.PreviousCompound(wctx, tc.request)
 			if tc.err != nil {
 				require.ErrorIs(t, err, tc.err)
 			} else {
@@ -70,13 +70,13 @@ func TestPreviousCompoundingQuerySingle(t *testing.T) {
 	}
 }
 
-func TestPreviousCompoundingQueryPaginated(t *testing.T) {
-	keeper, ctx := keepertest.CompoundKeeper(t)
+func TestPreviousCompoundQueryPaginated(t *testing.T) {
+	compKeeper, ctx := keepertest.CompoundKeeper(t)
 	wctx := sdk.WrapSDKContext(ctx)
-	msgs := createNPreviousCompounding(keeper, ctx, 5)
+	msgs := createNPreviousCompound(compKeeper, ctx, 5)
 
-	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllPreviousCompoundingRequest {
-		return &types.QueryAllPreviousCompoundingRequest{
+	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllPreviousCompoundRequest {
+		return &types.QueryAllPreviousCompoundRequest{
 			Pagination: &query.PageRequest{
 				Key:        next,
 				Offset:     offset,
@@ -88,12 +88,12 @@ func TestPreviousCompoundingQueryPaginated(t *testing.T) {
 	t.Run("ByOffset", func(t *testing.T) {
 		step := 2
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.PreviousCompoundingAll(wctx, request(nil, uint64(i), uint64(step), false))
+			resp, err := compKeeper.PreviousCompoundAll(wctx, request(nil, uint64(i), uint64(step), false))
 			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.PreviousCompounding), step)
+			require.LessOrEqual(t, len(resp.PreviousCompound), step)
 			require.Subset(t,
 				nullify.Fill(msgs),
-				nullify.Fill(resp.PreviousCompounding),
+				nullify.Fill(resp.PreviousCompound),
 			)
 		}
 	})
@@ -101,27 +101,27 @@ func TestPreviousCompoundingQueryPaginated(t *testing.T) {
 		step := 2
 		var next []byte
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.PreviousCompoundingAll(wctx, request(next, 0, uint64(step), false))
+			resp, err := compKeeper.PreviousCompoundAll(wctx, request(next, 0, uint64(step), false))
 			require.NoError(t, err)
-			require.LessOrEqual(t, len(resp.PreviousCompounding), step)
+			require.LessOrEqual(t, len(resp.PreviousCompound), step)
 			require.Subset(t,
 				nullify.Fill(msgs),
-				nullify.Fill(resp.PreviousCompounding),
+				nullify.Fill(resp.PreviousCompound),
 			)
 			next = resp.Pagination.NextKey
 		}
 	})
 	t.Run("Total", func(t *testing.T) {
-		resp, err := keeper.PreviousCompoundingAll(wctx, request(nil, 0, 0, true))
+		resp, err := compKeeper.PreviousCompoundAll(wctx, request(nil, 0, 0, true))
 		require.NoError(t, err)
 		require.Equal(t, len(msgs), int(resp.Pagination.Total))
 		require.ElementsMatch(t,
 			nullify.Fill(msgs),
-			nullify.Fill(resp.PreviousCompounding),
+			nullify.Fill(resp.PreviousCompound),
 		)
 	})
 	t.Run("InvalidRequest", func(t *testing.T) {
-		_, err := keeper.PreviousCompoundingAll(wctx, nil)
+		_, err := compKeeper.PreviousCompoundAll(wctx, nil)
 		require.ErrorIs(t, err, status.Error(codes.InvalidArgument, "invalid request"))
 	})
 }

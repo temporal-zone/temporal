@@ -28,7 +28,7 @@ import (
 	compoundCli "github.com/temporal-zone/temporal/x/compound/client/cli"
 )
 
-func TestShouldCompoundingHappen(t *testing.T) {
+func TestShouldCompoundHappen(t *testing.T) {
 	s := apptesting.SetupSuitelessTestHelper()
 
 	cases := []struct {
@@ -37,7 +37,7 @@ func TestShouldCompoundingHappen(t *testing.T) {
 		blockTime   time.Time
 		expected    bool
 		expectedErr error
-		prevComp    compTypes.PreviousCompounding
+		prevComp    compTypes.PreviousCompound
 	}{
 		{
 			name: "every 10 blocks",
@@ -48,7 +48,7 @@ func TestShouldCompoundingHappen(t *testing.T) {
 			blockTime:   time.Now(),
 			expected:    true,
 			expectedErr: nil,
-			prevComp: compTypes.PreviousCompounding{
+			prevComp: compTypes.PreviousCompound{
 				Delegator: "delegator2",
 				Timestamp: time.Now().Add(-time.Minute),
 			},
@@ -62,7 +62,7 @@ func TestShouldCompoundingHappen(t *testing.T) {
 			blockTime:   time.Now(),
 			expected:    true,
 			expectedErr: nil,
-			prevComp: compTypes.PreviousCompounding{
+			prevComp: compTypes.PreviousCompound{
 				Delegator: "delegator3",
 				Timestamp: time.Now().Add(-time.Minute),
 			},
@@ -76,7 +76,7 @@ func TestShouldCompoundingHappen(t *testing.T) {
 			blockTime:   time.Now(),
 			expected:    false,
 			expectedErr: nil,
-			prevComp: compTypes.PreviousCompounding{
+			prevComp: compTypes.PreviousCompound{
 				Delegator: "delegator4",
 				Timestamp: time.Now().Add(-time.Minute),
 			},
@@ -90,7 +90,7 @@ func TestShouldCompoundingHappen(t *testing.T) {
 			blockTime:   time.Now(),
 			expected:    true,
 			expectedErr: nil,
-			prevComp: compTypes.PreviousCompounding{
+			prevComp: compTypes.PreviousCompound{
 				Delegator: "delegator5",
 				Timestamp: time.Now().Add(-time.Minute),
 			},
@@ -99,9 +99,9 @@ func TestShouldCompoundingHappen(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			s.App.CompoundKeeper.SetPreviousCompounding(s.Ctx, tc.prevComp)
+			s.App.CompoundKeeper.SetPreviousCompound(s.Ctx, tc.prevComp)
 
-			actual := s.App.CompoundKeeper.ShouldCompoundingHappen(s.Ctx, tc.cs, tc.blockTime)
+			actual := s.App.CompoundKeeper.ShouldCompoundHappen(s.Ctx, tc.cs, tc.blockTime)
 			require.Equal(t, tc.expected, actual)
 		})
 	}
@@ -378,15 +378,15 @@ func TestTotalCompoundAmount(t *testing.T) {
 	}
 }
 
-func TestRecordCompounding(t *testing.T) {
+func TestRecordCompound(t *testing.T) {
 	s := apptesting.SetupSuitelessTestHelper()
 
 	// Test case 1: New delegator record
 	address1 := "address1"
 	blockTime1 := time.Now().UTC()
-	s.App.CompoundKeeper.RecordCompounding(s.Ctx, address1, blockTime1)
+	s.App.CompoundKeeper.RecordCompound(s.Ctx, address1, blockTime1)
 
-	value, found := s.App.CompoundKeeper.GetPreviousCompounding(s.Ctx, address1)
+	value, found := s.App.CompoundKeeper.GetPreviousCompound(s.Ctx, address1)
 	if !found {
 		t.Fatalf("Expected to find the address in the store but not found")
 	}
@@ -401,9 +401,9 @@ func TestRecordCompounding(t *testing.T) {
 	address2 := "address2"
 	blockTime2 := time.Now().Add(time.Duration(24) * time.Hour).UTC()
 
-	s.App.CompoundKeeper.RecordCompounding(s.Ctx, address2, blockTime2)
+	s.App.CompoundKeeper.RecordCompound(s.Ctx, address2, blockTime2)
 
-	value, found = s.App.CompoundKeeper.GetPreviousCompounding(s.Ctx, address2)
+	value, found = s.App.CompoundKeeper.GetPreviousCompound(s.Ctx, address2)
 	if !found {
 		t.Fatalf("Expected to find the address in the store but not found")
 	}
@@ -516,14 +516,14 @@ func TestRunCompounding(t *testing.T) {
 		require.Equal(t, len(currentDelHistoryList.GetDelegationHistory()[i].GetHistory()), 1)
 	}
 
-	//Get existing PreviousCompounding objects from state
-	out, err = clitestutil.ExecTestCLICmd(ctx, compoundCli.CmdListPreviousCompounding(), queryArgs)
+	//Get existing PreviousCompound objects from state
+	out, err = clitestutil.ExecTestCLICmd(ctx, compoundCli.CmdListPreviousCompound(), queryArgs)
 	require.NoError(t, err)
-	var currentPrevCompoundList compTypes.QueryAllPreviousCompoundingResponse
+	var currentPrevCompoundList compTypes.QueryAllPreviousCompoundResponse
 	require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &currentPrevCompoundList))
 
-	//Since no CompoundSettings are present so far, there should not be any PreviousCompoundings
-	require.Equal(t, len(currentPrevCompoundList.GetPreviousCompounding()), 0)
+	//Since no CompoundSettings are present so far, there should not be any PreviousCompounds
+	require.Equal(t, len(currentPrevCompoundList.GetPreviousCompound()), 0)
 
 	valSetting := fmt.Sprintf("[{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]", val.ValAddress.String())
 
@@ -579,13 +579,13 @@ func TestRunCompounding(t *testing.T) {
 			net.WaitForNextBlock()
 
 			if tc.desc == "ValidValidatorSettings" {
-				//Get existing PreviousCompounding objects from state, 1 should exist
+				//Get existing PreviousCompound objects from state, 1 should exist
 				args = request(nil, 0, uint64(10000), true)
-				out, err = clitestutil.ExecTestCLICmd(ctx, compoundCli.CmdListPreviousCompounding(), args)
+				out, err = clitestutil.ExecTestCLICmd(ctx, compoundCli.CmdListPreviousCompound(), args)
 				require.NoError(t, err)
-				var currentPrevCompoundListStart compTypes.QueryAllPreviousCompoundingResponse
+				var currentPrevCompoundListStart compTypes.QueryAllPreviousCompoundResponse
 				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &currentPrevCompoundListStart))
-				require.Equal(t, len(currentPrevCompoundListStart.GetPreviousCompounding()), 1)
+				require.Equal(t, len(currentPrevCompoundListStart.GetPreviousCompound()), 1)
 
 				height, err := net.LatestHeight()
 				require.NoError(t, err)

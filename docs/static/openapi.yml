@@ -46697,16 +46697,16 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /temporal/compound/previous_compounding:
+  /temporal/compound/previous_compound:
     get:
-      operationId: TemporalCompoundPreviousCompoundingAll
+      operationId: TemporalCompoundPreviousCompoundAll
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              previousCompounding:
+              previousCompound:
                 type: array
                 items:
                   type: object
@@ -46821,17 +46821,17 @@ paths:
           type: boolean
       tags:
         - Query
-  /temporal/compound/previous_compounding/{delegator}:
+  /temporal/compound/previous_compound/{delegator}:
     get:
-      summary: Queries a list of PreviousCompounding items.
-      operationId: TemporalCompoundPreviousCompounding
+      summary: Queries a list of PreviousCompound items.
+      operationId: TemporalCompoundPreviousCompound
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              previousCompounding:
+              previousCompound:
                 type: object
                 properties:
                   delegator:
@@ -75894,7 +75894,7 @@ definitions:
         type: string
         format: uint64
     description: Params defines the parameters for the module.
-  temporal.compound.PreviousCompounding:
+  temporal.compound.PreviousCompound:
     type: object
     properties:
       delegator:
@@ -75966,10 +75966,10 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  temporal.compound.QueryAllPreviousCompoundingResponse:
+  temporal.compound.QueryAllPreviousCompoundResponse:
     type: object
     properties:
-      previousCompounding:
+      previousCompound:
         type: array
         items:
           type: object
@@ -76041,10 +76041,10 @@ definitions:
           frequency:
             type: string
             format: uint64
-  temporal.compound.QueryGetPreviousCompoundingResponse:
+  temporal.compound.QueryGetPreviousCompoundResponse:
     type: object
     properties:
-      previousCompounding:
+      previousCompound:
         type: object
         properties:
           delegator:
