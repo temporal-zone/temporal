@@ -80,6 +80,22 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) error {
 	// Handle any leftover amount if 100% of rewards are to be compounded by adding any leftover amount to their first validator
 	compoundActions = k.HandleLeftOverAmount(compoundActions, totalCompoundPercent, amountToCompound)
 
+	// Claim all staking rewards, there is an edge case where if multiple validators worth of rewards are being
+	// compounded to a single validator and the compounding amount is greater than the sum of the staking reward being
+	// claimed on the delegate and the wallet balance, a panic will occur as the network will try to delegate more than
+	// the account has available to be delegated.
+	for _, delegation := range delegations {
+		valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
+		if err != nil {
+			return err
+		}
+
+		_, err = k.distrKeeper.WithdrawDelegationRewards(ctx, address, valAddr)
+		if err != nil {
+			return err
+		}
+	}
+
 	// Execute all CompoundActions
 	for _, compoundAction := range compoundActions {
 		err := Delegate(ctx, k, compoundAction, address)
@@ -178,7 +194,9 @@ func (k Keeper) StakingCompoundAmount(delegations []distrTypes.DelegationDelegat
 	outstandingRewards := sdk.Coin{Denom: walletBalance.Denom, Amount: sdk.NewInt(0)}
 	for _, delegation := range delegations {
 		for _, reward := range delegation.Reward {
-			outstandingRewards = outstandingRewards.AddAmount(reward.Amount.TruncateInt())
+			if reward.Denom == sdk.DefaultBondDenom {
+				outstandingRewards = outstandingRewards.AddAmount(reward.Amount.TruncateInt())
+			}
 		}
 	}
 

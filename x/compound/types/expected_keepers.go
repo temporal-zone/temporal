@@ -11,6 +11,7 @@ type DistrKeeper interface {
 	// Methods imported from distr should be defined here
 	CalculateDelegationRewards(ctx sdk.Context, val stakingTypes.ValidatorI, del stakingTypes.DelegationI, endingPeriod uint64) (rewards sdk.DecCoins)
 	IncrementValidatorPeriod(ctx sdk.Context, val stakingTypes.ValidatorI) uint64
+	WithdrawDelegationRewards(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (sdk.Coins, error)
 }
 
 type StakingKeeper interface {
