@@ -14,6 +14,20 @@ func initSDKConfig() {
 	consNodeAddressPrefix := app.AccountAddressPrefix + "valcons"
 	consNodePubKeyPrefix := app.AccountAddressPrefix + "valconspub"
 
+	// Set the DefaultBondDenom
+	sdk.DefaultBondDenom = app.DefaultBondDenom
+
+	// Register token denom
+	err := sdk.RegisterDenom(app.HumanCoinUnit, sdk.OneDec())
+	if err != nil {
+		panic(err)
+	}
+
+	err = sdk.RegisterDenom(app.BaseCoinUnit, sdk.NewDecWithPrec(1, app.TprlExponent))
+	if err != nil {
+		panic(err)
+	}
+
 	// Set and seal config
 	config := sdk.GetConfig()
 	config.SetBech32PrefixForAccount(app.AccountAddressPrefix, accountPubKeyPrefix)

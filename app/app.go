@@ -125,6 +125,10 @@ import (
 const (
 	AccountAddressPrefix = "temporal"
 	Name                 = "temporal"
+	HumanCoinUnit        = "tprl"
+	BaseCoinUnit         = "utprl"
+	TprlExponent         = 6
+	DefaultBondDenom     = BaseCoinUnit
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
