@@ -147,7 +147,7 @@ func TestDeleteCompoundSetting(t *testing.T) {
 
 	valSetting := fmt.Sprintf("[{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]", val.ValAddress.String())
 
-	fields := []string{valSetting, "10token", "111"}
+	fields := []string{valSetting, "10" + net.Config.BondDenom, "111"}
 	common := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),

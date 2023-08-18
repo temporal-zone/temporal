@@ -169,28 +169,29 @@ func TestHandleLeftOverAmount(t *testing.T) {
 
 func TestStakingCompoundAmount(t *testing.T) {
 	s := apptesting.SetupSuitelessTestHelper()
+	bondDenom := s.App.StakingKeeper.BondDenom(s.Ctx)
 
 	delegations := []distrTypes.DelegationDelegatorReward{
 		{
 			ValidatorAddress: "cosmosvalopr11",
 			Reward: sdk.DecCoins{
-				sdk.NewDecCoin("uatom", sdk.NewInt(100)),
+				sdk.NewDecCoin(bondDenom, sdk.NewInt(100)),
 			},
 		},
 		{
 			ValidatorAddress: "cosmosvaloper12",
 			Reward: sdk.DecCoins{
-				sdk.NewDecCoin("uatom", sdk.NewInt(200)),
+				sdk.NewDecCoin(bondDenom, sdk.NewInt(200)),
 			},
 		},
 	}
 
-	walletBalance := sdk.NewCoin("mycoin", sdk.NewInt(1000))
+	walletBalance := sdk.NewCoin(bondDenom, sdk.NewInt(1000))
 
 	outstandingRewards := s.App.CompoundKeeper.StakingCompoundAmount(delegations, walletBalance)
 
 	require.Equal(t, sdk.NewInt(300), outstandingRewards.Amount)
-	require.Equal(t, "mycoin", outstandingRewards.Denom)
+	require.Equal(t, bondDenom, outstandingRewards.Denom)
 }
 
 func TestExtraCompoundAmount(t *testing.T) {
@@ -300,27 +301,28 @@ func TestBuildCompoundActions(t *testing.T) {
 
 func TestTotalCompoundAmount(t *testing.T) {
 	s := apptesting.SetupSuitelessTestHelper()
+	bondDenom := s.App.StakingKeeper.BondDenom(s.Ctx)
 
 	delegations := []distrTypes.DelegationDelegatorReward{
 		{
 			ValidatorAddress: "cosmosvalopr11",
 			Reward: sdk.DecCoins{
-				sdk.NewDecCoin("uatom", sdk.NewInt(100)),
+				sdk.NewDecCoin(bondDenom, sdk.NewInt(100)),
 			},
 		},
 		{
 			ValidatorAddress: "cosmosvaloper12",
 			Reward: sdk.DecCoins{
-				sdk.NewDecCoin("uatom", sdk.NewInt(200)),
+				sdk.NewDecCoin(bondDenom, sdk.NewInt(200)),
 			},
 		},
 	}
 
-	walletBalance := sdk.NewCoin("uatom", sdk.NewInt(1000))
+	walletBalance := sdk.NewCoin(bondDenom, sdk.NewInt(1000))
 	cs := compTypes.CompoundSetting{
 		Delegator:        "cosmos11",
 		ValidatorSetting: []*compTypes.ValidatorSetting{},
-		AmountToRemain:   sdk.NewCoin("uatom", sdk.NewInt(500)),
+		AmountToRemain:   sdk.NewCoin(bondDenom, sdk.NewInt(500)),
 	}
 
 	total := s.App.CompoundKeeper.TotalCompoundAmount(delegations, walletBalance, cs)
@@ -328,11 +330,11 @@ func TestTotalCompoundAmount(t *testing.T) {
 		t.Errorf("Total compound amount is incorrect, got: %d, want: %d.", total.Amount.Int64(), 800)
 	}
 
-	walletBalance = sdk.NewCoin("uatom", sdk.NewInt(1500))
+	walletBalance = sdk.NewCoin(bondDenom, sdk.NewInt(1500))
 	cs = compTypes.CompoundSetting{
 		Delegator:        "cosmos12",
 		ValidatorSetting: []*compTypes.ValidatorSetting{},
-		AmountToRemain:   sdk.NewCoin("uatom", sdk.NewInt(1500)),
+		AmountToRemain:   sdk.NewCoin(bondDenom, sdk.NewInt(1500)),
 	}
 
 	total = s.App.CompoundKeeper.TotalCompoundAmount(delegations, walletBalance, cs)
@@ -341,11 +343,11 @@ func TestTotalCompoundAmount(t *testing.T) {
 	}
 
 	delegations = []distrTypes.DelegationDelegatorReward{}
-	walletBalance = sdk.NewCoin("uatom", sdk.NewInt(1500))
+	walletBalance = sdk.NewCoin(bondDenom, sdk.NewInt(1500))
 	cs = compTypes.CompoundSetting{
 		Delegator:        "cosmos13",
 		ValidatorSetting: []*compTypes.ValidatorSetting{},
-		AmountToRemain:   sdk.NewCoin("uatom", sdk.NewInt(1500)),
+		AmountToRemain:   sdk.NewCoin(bondDenom, sdk.NewInt(1500)),
 	}
 
 	total = s.App.CompoundKeeper.TotalCompoundAmount(delegations, walletBalance, cs)
@@ -353,11 +355,11 @@ func TestTotalCompoundAmount(t *testing.T) {
 		t.Errorf("Total compound amount is incorrect, got: %d, want: %d.", total.Amount.Int64(), 0)
 	}
 
-	walletBalance = sdk.NewCoin("uatom", sdk.NewInt(0))
+	walletBalance = sdk.NewCoin(bondDenom, sdk.NewInt(0))
 	cs = compTypes.CompoundSetting{
 		Delegator:        "cosmos13",
 		ValidatorSetting: []*compTypes.ValidatorSetting{},
-		AmountToRemain:   sdk.NewCoin("uatom", sdk.NewInt(1500)),
+		AmountToRemain:   sdk.NewCoin(bondDenom, sdk.NewInt(1500)),
 	}
 
 	total = s.App.CompoundKeeper.TotalCompoundAmount(delegations, walletBalance, cs)
@@ -365,11 +367,11 @@ func TestTotalCompoundAmount(t *testing.T) {
 		t.Errorf("Total compound amount is incorrect, got: %d, want: %d.", total.Amount.Int64(), 0)
 	}
 
-	walletBalance = sdk.NewCoin("uatom", sdk.NewInt(1500))
+	walletBalance = sdk.NewCoin(bondDenom, sdk.NewInt(1500))
 	cs = compTypes.CompoundSetting{
 		Delegator:        "cosmos13",
 		ValidatorSetting: []*compTypes.ValidatorSetting{},
-		AmountToRemain:   sdk.NewCoin("uatom", sdk.NewInt(1000)),
+		AmountToRemain:   sdk.NewCoin(bondDenom, sdk.NewInt(1000)),
 	}
 
 	total = s.App.CompoundKeeper.TotalCompoundAmount(delegations, walletBalance, cs)
@@ -605,8 +607,10 @@ func TestRunCompounding(t *testing.T) {
 				delhistory := currentDelegetaionHistoryList.GetDelegationHistory()
 				require.Equal(t, len(delhistory), 1)
 
+				// depending on exact timing there might be 4 or 5 prev compounds.
 				prevComps := delhistory[0].GetHistory()
-				require.Equal(t, len(prevComps), 4)
+				require.GreaterOrEqual(t, len(prevComps), 4)
+				require.LessOrEqual(t, len(prevComps), 5)
 
 				//The DelegationHistory should match the CompoundSetting that was just created
 				require.Equal(t, delhistory[0].Address, val.Address.String())
