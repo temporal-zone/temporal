@@ -7,6 +7,7 @@ import (
 	distrTypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingTypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	compTypes "github.com/temporal-zone/temporal/x/compound/types"
+	"strconv"
 	"time"
 )
 
@@ -36,10 +37,12 @@ func (k Keeper) RunCompounding(ctx sdk.Context) error {
 		numberOfCompoundsTemp--
 
 		if numberOfCompoundsTemp <= 0 {
+			k.Logger(ctx).Info("Compounds in this block: 100")
 			return nil
 		}
 	}
 
+	k.Logger(ctx).Info("Compounds in this block: " + strconv.Itoa(int(k.NumberOfCompoundsPerBlock(ctx)-numberOfCompoundsTemp)))
 	return nil
 }
 
