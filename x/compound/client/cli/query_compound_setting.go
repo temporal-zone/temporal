@@ -46,8 +46,8 @@ func CmdListCompoundSetting() *cobra.Command {
 
 func CmdShowCompoundSetting() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-compound-setting [index-123]",
-		Short: "shows a CompoundSetting",
+		Use:   "show-compound-setting [delegator-address]",
+		Short: "shows a CompoundSetting for a delegator address",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			clientCtx, err := client.GetClientQueryContext(cmd)
