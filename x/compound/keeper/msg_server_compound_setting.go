@@ -5,6 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/temporal-zone/temporal/x/compound/types"
+	"golang.org/x/exp/slices"
 )
 
 func (k msgServer) CreateCompoundSetting(goCtx context.Context, msg *types.MsgCreateCompoundSetting) (*types.MsgCreateCompoundSettingResponse, error) {
@@ -104,6 +105,7 @@ func (k msgServer) ValidateValidatorSettings(ctx sdk.Context, validatorSetting [
 	}
 
 	totalPercentToCompound := uint64(0)
+	valoperAddresses := make([]string, len(validatorSetting))
 	for _, valSetting := range validatorSetting {
 		if valSetting.GetPercentToCompound() < 1 || valSetting.GetPercentToCompound() > 100 {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "percentToCompound can not be less than 1 or greater than 100")
@@ -120,10 +122,14 @@ func (k msgServer) ValidateValidatorSettings(ctx sdk.Context, validatorSetting [
 		}
 
 		_, found := k.stakingKeeper.GetValidator(ctx, valAddress)
-
 		if !found {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "can not find validator")
 		}
+
+		if slices.Contains(valoperAddresses, valSetting.ValidatorAddress) {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator address can not be found in another validator setting")
+		}
+		valoperAddresses = append(valoperAddresses, valSetting.ValidatorAddress)
 	}
 
 	return nil

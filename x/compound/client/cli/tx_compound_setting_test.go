@@ -33,23 +33,7 @@ func TestCreateCompoundSetting(t *testing.T) {
 	val := net.Validators[0]
 	val1 := net.Validators[1]
 	ctx := val.ClientCtx
-
-	request := func(next []byte, offset, limit uint64, total bool) []string {
-		args := []string{
-			fmt.Sprintf("--%s=json", tmcli.OutputFlag),
-		}
-		if next == nil {
-			args = append(args, fmt.Sprintf("--%s=%d", flags.FlagOffset, offset))
-		} else {
-			args = append(args, fmt.Sprintf("--%s=%s", flags.FlagPageKey, next))
-		}
-		args = append(args, fmt.Sprintf("--%s=%d", flags.FlagLimit, limit))
-		if total {
-			args = append(args, fmt.Sprintf("--%s", flags.FlagCountTotal))
-		}
-		return args
-	}
-
+	
 	tests := []struct {
 		desc               string
 		valSetting         string
@@ -92,6 +76,24 @@ func TestCreateCompoundSetting(t *testing.T) {
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
 			},
 		},
+		{
+			desc: "invalid",
+			valSetting: fmt.Sprintf(
+				"[{\"validatorAddress\":\"%s\",\"percentToCompound\":50},{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]",
+				val.ValAddress.String(),
+				val.ValAddress.String()),
+			amountToRemain:     "10utprl",
+			frequency:          "111",
+			compoundValidators: []string{val.ValAddress.String(), val.ValAddress.String()},
+			code:               18,
+
+			args: []string{
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
+			},
+		},
 	}
 	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
@@ -122,22 +124,23 @@ func TestCreateCompoundSetting(t *testing.T) {
 			require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
 			require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, tc.code))
 
-			_ = request(nil, 0, uint64(10000), true)
-			args = append([]string{val.Address.String()}, fmt.Sprintf("--%s=json", tmcli.OutputFlag))
-			out, err = clitestutil.ExecTestCLICmd(ctx, cli.CmdShowCompoundSetting(), args)
-			if tc.err != nil {
-				require.ErrorIs(t, err, tc.err)
-				return
-			}
-			require.NoError(t, err)
+			if tc.desc != "invalid" {
+				args = append([]string{val.Address.String()}, fmt.Sprintf("--%s=json", tmcli.OutputFlag))
+				out, err = clitestutil.ExecTestCLICmd(ctx, cli.CmdShowCompoundSetting(), args)
+				if tc.err != nil {
+					require.ErrorIs(t, err, tc.err)
+					return
+				}
+				require.NoError(t, err)
 
-			var compoundSetting types.QueryGetCompoundSettingResponse
-			require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &compoundSetting))
-			require.NotNil(t, compoundSetting.GetCompoundSetting())
-			require.Equal(t, len(compoundSetting.GetCompoundSetting().ValidatorSetting), len(tc.compoundValidators))
+				var compoundSetting types.QueryGetCompoundSettingResponse
+				require.NoError(t, net.Config.Codec.UnmarshalJSON(out.Bytes(), &compoundSetting))
+				require.NotNil(t, compoundSetting.GetCompoundSetting())
+				require.Equal(t, len(compoundSetting.GetCompoundSetting().ValidatorSetting), len(tc.compoundValidators))
 
-			for i, _ := range tc.compoundValidators {
-				require.Equal(t, compoundSetting.GetCompoundSetting().ValidatorSetting[i].ValidatorAddress, tc.compoundValidators[i])
+				for i := range tc.compoundValidators {
+					require.Equal(t, compoundSetting.GetCompoundSetting().ValidatorSetting[i].ValidatorAddress, tc.compoundValidators[i])
+				}
 			}
 		})
 	}
