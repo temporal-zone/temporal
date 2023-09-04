@@ -12,6 +12,8 @@ type DistrKeeper interface {
 	CalculateDelegationRewards(ctx sdk.Context, val stakingTypes.ValidatorI, del stakingTypes.DelegationI, endingPeriod uint64) (rewards sdk.DecCoins)
 	IncrementValidatorPeriod(ctx sdk.Context, val stakingTypes.ValidatorI) uint64
 	WithdrawDelegationRewards(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) (sdk.Coins, error)
+	GetDelegatorWithdrawAddr(ctx sdk.Context, delAddr sdk.AccAddress) sdk.AccAddress
+	SetDelegatorWithdrawAddr(ctx sdk.Context, delAddr, withdrawAddr sdk.AccAddress)
 }
 
 type StakingKeeper interface {

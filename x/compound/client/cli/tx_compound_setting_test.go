@@ -6,6 +6,7 @@ import (
 	"github.com/temporal-zone/temporal/x/compound/types"
 	"strconv"
 	"testing"
+	"time"
 
 	sdkmath "cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -14,6 +15,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 
+	distrcli "github.com/cosmos/cosmos-sdk/x/distribution/client/cli"
 	"github.com/temporal-zone/temporal/testutil/network"
 	"github.com/temporal-zone/temporal/x/compound/client/cli"
 )
@@ -33,7 +35,7 @@ func TestCreateCompoundSetting(t *testing.T) {
 	val := net.Validators[0]
 	val1 := net.Validators[1]
 	ctx := val.ClientCtx
-	
+
 	tests := []struct {
 		desc               string
 		valSetting         string
@@ -48,7 +50,7 @@ func TestCreateCompoundSetting(t *testing.T) {
 		{
 			desc:               "valid 1",
 			valSetting:         fmt.Sprintf("[{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]", val.ValAddress.String()),
-			amountToRemain:     "10utprl",
+			amountToRemain:     "10" + net.Config.BondDenom,
 			frequency:          "111",
 			compoundValidators: []string{val.ValAddress.String()},
 
@@ -65,7 +67,7 @@ func TestCreateCompoundSetting(t *testing.T) {
 				"[{\"validatorAddress\":\"%s\",\"percentToCompound\":50},{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]",
 				val.ValAddress.String(),
 				val1.ValAddress.String()),
-			amountToRemain:     "10utprl",
+			amountToRemain:     "10" + net.Config.BondDenom,
 			frequency:          "111",
 			compoundValidators: []string{val.ValAddress.String(), val1.ValAddress.String()},
 
@@ -82,10 +84,27 @@ func TestCreateCompoundSetting(t *testing.T) {
 				"[{\"validatorAddress\":\"%s\",\"percentToCompound\":50},{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]",
 				val.ValAddress.String(),
 				val.ValAddress.String()),
-			amountToRemain:     "10utprl",
+			amountToRemain:     "10" + net.Config.BondDenom,
 			frequency:          "111",
 			compoundValidators: []string{val.ValAddress.String(), val.ValAddress.String()},
 			code:               18,
+
+			args: []string{
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(net.Config.BondDenom, sdkmath.NewInt(10))).String()),
+			},
+		},
+		{
+			desc: "withdraw",
+			valSetting: fmt.Sprintf(
+				"[{\"validatorAddress\":\"%s\",\"percentToCompound\":50},{\"validatorAddress\":\"%s\",\"percentToCompound\":50}]",
+				val.ValAddress.String(),
+				val1.ValAddress.String()),
+			amountToRemain:     "10" + net.Config.BondDenom,
+			frequency:          "5",
+			compoundValidators: []string{val.ValAddress.String(), val1.ValAddress.String()},
 
 			args: []string{
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -124,7 +143,7 @@ func TestCreateCompoundSetting(t *testing.T) {
 			require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
 			require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, tc.code))
 
-			if tc.desc != "invalid" {
+			if tc.desc != "invalid" && tc.desc != "withdraw" {
 				args = append([]string{val.Address.String()}, fmt.Sprintf("--%s=json", tmcli.OutputFlag))
 				out, err = clitestutil.ExecTestCLICmd(ctx, cli.CmdShowCompoundSetting(), args)
 				if tc.err != nil {
@@ -141,6 +160,25 @@ func TestCreateCompoundSetting(t *testing.T) {
 				for i := range tc.compoundValidators {
 					require.Equal(t, compoundSetting.GetCompoundSetting().ValidatorSetting[i].ValidatorAddress, tc.compoundValidators[i])
 				}
+			}
+
+			if tc.desc == "withdraw" {
+				args = append([]string{val1.Address.String()}, tc.args...)
+				out, err = clitestutil.ExecTestCLICmd(ctx, distrcli.NewSetWithdrawAddrCmd(), args)
+				if tc.err != nil {
+					require.ErrorIs(t, err, tc.err)
+					return
+				}
+				require.NoError(t, err)
+
+				require.NoError(t, net.WaitForNextBlock())
+
+				var resp sdk.TxResponse
+				require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
+				require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, 0))
+
+				_, err = net.WaitForHeightWithTimeout(15+ctx.Height, time.Second*45)
+				require.NoError(t, err)
 			}
 		})
 	}

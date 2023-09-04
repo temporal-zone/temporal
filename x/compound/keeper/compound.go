@@ -83,6 +83,12 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) error {
 	// Handle any leftover amount if 100% of rewards are to be compounded by adding any leftover amount to their first validator
 	compoundActions = k.HandleLeftOverAmount(compoundActions, totalCompoundPercent, amountToCompound)
 
+	// If withdraw address is different change it temporarily
+	withdrawAddr := k.distrKeeper.GetDelegatorWithdrawAddr(ctx, address)
+	if !withdrawAddr.Equals(address) {
+		k.distrKeeper.SetDelegatorWithdrawAddr(ctx, address, address)
+	}
+
 	// Claim all staking rewards, there is an edge case where if multiple validators worth of rewards are being
 	// compounded to a single validator and the compounding amount is greater than the sum of the staking reward being
 	// claimed on the delegate and the wallet balance, a panic will occur as the network will try to delegate more than
@@ -97,6 +103,11 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	// Change withdraw address back to what it was
+	if !withdrawAddr.Equals(address) {
+		k.distrKeeper.SetDelegatorWithdrawAddr(ctx, address, withdrawAddr)
 	}
 
 	// Execute all CompoundActions
