@@ -146,7 +146,7 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	err := am.keeper.RunCompounding(ctx)
 	if err != nil {
-		panic(err)
+		am.keeper.Logger(ctx).Error(err.Error())
 	}
 
 	return []abci.ValidatorUpdate{}
