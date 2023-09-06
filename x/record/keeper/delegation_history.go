@@ -12,22 +12,14 @@ import (
 func (k Keeper) SetDelegationHistory(ctx sdk.Context, delegationHistory types.DelegationHistory) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DelegationHistoryKeyPrefix))
 	b := k.cdc.MustMarshal(&delegationHistory)
-	store.Set(types.DelegationHistoryKey(
-		delegationHistory.Address,
-	), b)
+	store.Set(types.DelegationHistoryKey(delegationHistory.Address), b)
 }
 
 // GetDelegationHistory returns a delegationHistory from its index
-func (k Keeper) GetDelegationHistory(
-	ctx sdk.Context,
-	address string,
-
-) (val types.DelegationHistory, found bool) {
+func (k Keeper) GetDelegationHistory(ctx sdk.Context, address string) (val types.DelegationHistory, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DelegationHistoryKeyPrefix))
 
-	b := store.Get(types.DelegationHistoryKey(
-		address,
-	))
+	b := store.Get(types.DelegationHistoryKey(address))
 	if b == nil {
 		return val, false
 	}
@@ -37,15 +29,9 @@ func (k Keeper) GetDelegationHistory(
 }
 
 // RemoveDelegationHistory removes a delegationHistory from the store
-func (k Keeper) RemoveDelegationHistory(
-	ctx sdk.Context,
-	address string,
-
-) {
+func (k Keeper) RemoveDelegationHistory(ctx sdk.Context, address string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DelegationHistoryKeyPrefix))
-	store.Delete(types.DelegationHistoryKey(
-		address,
-	))
+	store.Delete(types.DelegationHistoryKey(address))
 }
 
 // GetAllDelegationHistory returns all delegationHistory
@@ -66,21 +52,11 @@ func (k Keeper) GetAllDelegationHistory(ctx sdk.Context) (list []types.Delegatio
 
 // CheckDelegationHistoryRecords checks if the accounts DelegationHistory record needs to be updated
 func (k Keeper) CheckDelegationHistoryRecords(ctx sdk.Context, delAddr sdk.AccAddress) error {
-	if k.stakingKeeper == nil {
-		panic("stakingKeeper is nil")
-	}
-
-	var (
-		delegationHistory types.DelegationHistory
-		found             bool
-		err               error
-	)
-
 	//current staked amount
 	delegatedAmount := k.CalcTotalDelegatedAmount(ctx, delAddr)
 
 	//if no DelegationHistory exists, create a new one
-	delegationHistory, found = k.GetDelegationHistory(ctx, delAddr.String())
+	delegationHistory, found := k.GetDelegationHistory(ctx, delAddr.String())
 	if !found {
 		delegationHistory = k.NewDelegationHistory(ctx, delAddr, delegatedAmount)
 	}
@@ -88,12 +64,13 @@ func (k Keeper) CheckDelegationHistoryRecords(ctx sdk.Context, delAddr sdk.AccAd
 	//calculates the difference between the sum of DelegationTimestamps balances in the DelegationHistory and the current amount staked
 	difference := k.CalcDelegationHistoryDifference(delegatedAmount, delegationHistory)
 
-	//on a positive difference only add a DelegationTimestamp to a DelegationHistory
+	//on a positive difference only add to a DelegationTimestamp or a new one to a DelegationHistory
 	if difference.IsPositive() {
 		delegationHistory = k.AddDelegationTimestamp(ctx, difference, delegationHistory)
 	}
 
 	//on a negative difference it might adjust and/or remove a DelegationTimestamp in a DelegationHistory
+	var err error
 	if difference.IsNegative() {
 		delegationHistory, err = k.AdjustDelegationTimestamps(delegationHistory, difference)
 		if err != nil {
@@ -174,20 +151,22 @@ func (k Keeper) PruneDelegationHistory(delegationHistory types.DelegationHistory
 	delegationHistoryNew := types.DelegationHistory{}
 	delegationHistoryNew.Address = delegationHistory.Address
 
-	//remove any DelegationTimestamp that have a 0 amount
+	//remove any DelegationTimestamp that have a 0 amount amd compress DelegationHistory's down to a daily frequency
 	for _, delegationTimestamp := range delegationHistory.GetHistory() {
 		if !delegationTimestamp.GetBalance().Amount.Equal(sdk.NewInt(0)) {
 			delegationHistoryNew.History = append(delegationHistoryNew.GetHistory(), delegationTimestamp)
 		}
 	}
-	
+
 	return delegationHistoryNew
 }
 
 // NewDelegationTimestamp creates a new DelegationTimestamp
 func (k Keeper) NewDelegationTimestamp(ctx sdk.Context, amount sdk.Int) types.DelegationTimestamp {
+	bt := time.Unix(ctx.BlockTime().Unix(), 0)
+	dt := time.Date(bt.Year(), bt.Month(), bt.Day(), 0, 0, 0, 0, bt.Location())
 	return types.DelegationTimestamp{
-		Timestamp: time.Unix(ctx.BlockTime().Unix(), 0),
+		Timestamp: dt,
 		Balance: sdk.NewCoin(
 			k.stakingKeeper.BondDenom(ctx),
 			amount,
