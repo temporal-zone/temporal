@@ -26,7 +26,7 @@ var _ = strconv.IntSize
 func TestCreateCompoundSetting(t *testing.T) {
 	cfg := network.DefaultConfig()
 	cfg.NumValidators = 2
-	state := types.GenesisState{Params: types.NewParams(uint64(100), uint64(5))}
+	state := types.GenesisState{Params: types.NewParams(100, 5)}
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf

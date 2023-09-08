@@ -65,7 +65,7 @@ func (p Params) String() string {
 
 // validateNumberOfCompoundsPerBlock validates the NumberOfCompoundsPerBlock param
 func validateNumberOfCompoundsPerBlock(v interface{}) error {
-	numberOfCompoundsPerBlock, ok := v.(uint64)
+	numberOfCompoundsPerBlock, ok := v.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", v)
 	}
@@ -79,7 +79,7 @@ func validateNumberOfCompoundsPerBlock(v interface{}) error {
 
 // validateMinimumCompoundFrequency the NumberOfCompoundsPerBlock param
 func validateMinimumCompoundFrequency(v interface{}) error {
-	minimumCompoundFrequency, ok := v.(uint64)
+	minimumCompoundFrequency, ok := v.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", v)
 	}
