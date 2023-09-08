@@ -9,10 +9,10 @@ import (
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 var (
-	KeyNumberOfCompoundsPerBlock            = []byte("NumberOfCompoundsPerBlock")
-	KeyMinimumCompoundFrequency             = []byte("MinimumCompoundFrequency")
-	DefaultNumberOfCompoundsPerBlock uint64 = 100
-	DefaultMinimumCompoundFrequency  uint64 = 600
+	KeyNumberOfCompoundsPerBlock           = []byte("NumberOfCompoundsPerBlock")
+	KeyMinimumCompoundFrequency            = []byte("MinimumCompoundFrequency")
+	DefaultNumberOfCompoundsPerBlock int64 = 100
+	DefaultMinimumCompoundFrequency  int64 = 100
 )
 
 // ParamKeyTable the param key table for launch module
@@ -21,7 +21,7 @@ func ParamKeyTable() paramtypes.KeyTable {
 }
 
 // NewParams creates a new Params instance
-func NewParams(numberOfCompoundsPerBlock uint64, minimumCompoundFrequency uint64) Params {
+func NewParams(numberOfCompoundsPerBlock int64, minimumCompoundFrequency int64) Params {
 	return Params{
 		NumberOfCompoundsPerBlock: numberOfCompoundsPerBlock,
 		MinimumCompoundFrequency:  minimumCompoundFrequency,

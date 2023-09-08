@@ -6,11 +6,13 @@ import "temporal/compound/validator_setting.proto";
 import "gogoproto/gogo.proto"; 
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
+import "cosmos/msg/v1/msg.proto";
 
 message CompoundSetting {
+  option (cosmos.msg.v1.signer) = "delegator";
   string delegator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
   repeated ValidatorSetting validatorSetting = 2;
   cosmos.base.v1beta1.Coin amountToRemain = 3 [(gogoproto.nullable) = false];
-  uint64 frequency = 4;
+  int64 frequency = 4;
 }
 

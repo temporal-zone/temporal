@@ -73,7 +73,6 @@ message QueryAllCompoundSettingResponse {
 }
 
 message QueryGetPreviousCompoundRequest {
-  option (cosmos.msg.v1.signer) = "delegator";
   string delegator = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 }
 
