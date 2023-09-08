@@ -19,13 +19,13 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 }
 
 // NumberOfCompoundsPerBlock returns the NumberOfCompoundsPerBlock param
-func (k Keeper) NumberOfCompoundsPerBlock(ctx sdk.Context) (res uint64) {
+func (k Keeper) NumberOfCompoundsPerBlock(ctx sdk.Context) (res int64) {
 	k.paramstore.Get(ctx, types.KeyNumberOfCompoundsPerBlock, &res)
 	return
 }
 
 // MinimumCompoundFrequency returns the MinimumCompoundFrequency param
-func (k Keeper) MinimumCompoundFrequency(ctx sdk.Context) (res uint64) {
+func (k Keeper) MinimumCompoundFrequency(ctx sdk.Context) (res int64) {
 	k.paramstore.Get(ctx, types.KeyMinimumCompoundFrequency, &res)
 	return
 }
