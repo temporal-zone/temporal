@@ -163,10 +163,8 @@ func (k Keeper) PruneDelegationHistory(delegationHistory types.DelegationHistory
 
 // NewDelegationTimestamp creates a new DelegationTimestamp
 func (k Keeper) NewDelegationTimestamp(ctx sdk.Context, amount sdk.Int) types.DelegationTimestamp {
-	bt := time.Unix(ctx.BlockTime().Unix(), 0)
-	dt := time.Date(bt.Year(), bt.Month(), bt.Day(), 0, 0, 0, 0, bt.Location())
 	return types.DelegationTimestamp{
-		Timestamp: dt,
+		Timestamp: time.Unix(ctx.BlockTime().Unix(), 0),
 		Balance: sdk.NewCoin(
 			k.stakingKeeper.BondDenom(ctx),
 			amount,
