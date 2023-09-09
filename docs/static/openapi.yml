@@ -46674,6 +46674,8 @@ paths:
                   minimumCompoundFrequency:
                     type: string
                     format: int64
+                  compoundModuleEnabled:
+                    type: boolean
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -75893,6 +75895,8 @@ definitions:
       minimumCompoundFrequency:
         type: string
         format: int64
+      compoundModuleEnabled:
+        type: boolean
     description: Params defines the parameters for the module.
   temporal.compound.PreviousCompound:
     type: object
@@ -76065,6 +76069,8 @@ definitions:
           minimumCompoundFrequency:
             type: string
             format: int64
+          compoundModuleEnabled:
+            type: boolean
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   temporal.compound.ValidatorSetting:
     type: object

@@ -10,4 +10,5 @@ message Params {
   option (gogoproto.goproto_stringer) = false;
   int64 numberOfCompoundsPerBlock = 1 [(gogoproto.moretags) = "yaml:\"number_of_compounds_per_block\""];
   int64 minimumCompoundFrequency = 2 [(gogoproto.moretags) = "yaml:\"minimum_compound_frequency\""];
+  bool compoundModuleEnabled = 3 [(gogoproto.moretags) = "yaml:\"compound_module_enabled\""];
 }

@@ -10,6 +10,7 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	return types.NewParams(
 		k.NumberOfCompoundsPerBlock(ctx),
 		k.MinimumCompoundFrequency(ctx),
+		k.CompoundModuleEnabled(ctx),
 	)
 }
 
@@ -27,5 +28,11 @@ func (k Keeper) NumberOfCompoundsPerBlock(ctx sdk.Context) (res int64) {
 // MinimumCompoundFrequency returns the MinimumCompoundFrequency param
 func (k Keeper) MinimumCompoundFrequency(ctx sdk.Context) (res int64) {
 	k.paramstore.Get(ctx, types.KeyMinimumCompoundFrequency, &res)
+	return
+}
+
+// CompoundModuleEnabled returns the CompoundModuleEnabled param
+func (k Keeper) CompoundModuleEnabled(ctx sdk.Context) (res bool) {
+	k.paramstore.Get(ctx, types.KeyCompoundModuleEnabled, &res)
 	return
 }

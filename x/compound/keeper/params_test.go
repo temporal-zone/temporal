@@ -17,4 +17,5 @@ func TestGetParams(t *testing.T) {
 	require.EqualValues(t, params, k.GetParams(ctx))
 	require.EqualValues(t, params.NumberOfCompoundsPerBlock, k.NumberOfCompoundsPerBlock(ctx))
 	require.EqualValues(t, params.MinimumCompoundFrequency, k.MinimumCompoundFrequency(ctx))
+	require.EqualValues(t, params.CompoundModuleEnabled, k.CompoundModuleEnabled(ctx))
 }

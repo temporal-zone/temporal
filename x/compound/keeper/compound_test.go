@@ -450,7 +450,7 @@ func TestCalculateCompoundingAmount(t *testing.T) {
 func networkWithCustomParams(t *testing.T) *network.Network {
 	t.Helper()
 	cfg := network.DefaultConfig()
-	state := types.GenesisState{Params: types.NewParams(100, 5)}
+	state := types.GenesisState{Params: types.NewParams(100, 5, true)}
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
