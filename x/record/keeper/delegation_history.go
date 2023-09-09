@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/temporal-zone/temporal/x/record/types"
@@ -88,7 +89,7 @@ func (k Keeper) CheckDelegationHistoryRecords(ctx sdk.Context, delAddr sdk.AccAd
 }
 
 // CalcTotalDelegatedAmount gets all delegations shares, sums them and converts to bond denom
-func (k Keeper) CalcTotalDelegatedAmount(ctx sdk.Context, delAddr sdk.AccAddress) sdk.Int {
+func (k Keeper) CalcTotalDelegatedAmount(ctx sdk.Context, delAddr sdk.AccAddress) math.Int {
 	delegatedAmount := sdk.NewDec(0)
 	delegations := k.stakingKeeper.GetAllDelegatorDelegations(ctx, delAddr)
 
@@ -105,7 +106,7 @@ func (k Keeper) CalcTotalDelegatedAmount(ctx sdk.Context, delAddr sdk.AccAddress
 }
 
 // CalcDelegationHistoryDifference calculates the difference between the sum of bonded amounts in a DelegationHistory and the delegation amount
-func (k Keeper) CalcDelegationHistoryDifference(delegationAmount sdk.Int, delegationHistory types.DelegationHistory) sdk.Int {
+func (k Keeper) CalcDelegationHistoryDifference(delegationAmount math.Int, delegationHistory types.DelegationHistory) math.Int {
 	delegatedAmountHistory := sdk.NewInt(0)
 	for _, delegationHistory := range delegationHistory.GetHistory() {
 		delegatedAmountHistory = delegatedAmountHistory.Add(delegationHistory.GetBalance().Amount)
@@ -115,7 +116,7 @@ func (k Keeper) CalcDelegationHistoryDifference(delegationAmount sdk.Int, delega
 }
 
 // AddDelegationTimestamp adds or adjusts a DelegationTimestamp on an existing DelegationHistory record
-func (k Keeper) AddDelegationTimestamp(ctx sdk.Context, amount sdk.Int, delegationHistory types.DelegationHistory) types.DelegationHistory {
+func (k Keeper) AddDelegationTimestamp(ctx sdk.Context, amount math.Int, delegationHistory types.DelegationHistory) types.DelegationHistory {
 	newDelTimestamp := k.NewDelegationTimestamp(ctx, amount)
 	for _, delTimestamp := range delegationHistory.GetHistory() {
 		if delTimestamp.GetTimestamp().Equal(newDelTimestamp.GetTimestamp()) {
@@ -127,7 +128,7 @@ func (k Keeper) AddDelegationTimestamp(ctx sdk.Context, amount sdk.Int, delegati
 }
 
 // RemoveDelegationTimestamps removes or reduces DelegationsTimestamp(s) on a DelegationHistory
-func (k Keeper) RemoveDelegationTimestamps(delegationHistory types.DelegationHistory, difference sdk.Int) types.DelegationHistory {
+func (k Keeper) RemoveDelegationTimestamps(delegationHistory types.DelegationHistory, difference math.Int) types.DelegationHistory {
 	absoluteDifference := difference.Abs()
 
 	for i := len(delegationHistory.GetHistory()) - 1; i >= 0; i-- {
@@ -155,7 +156,7 @@ func (k Keeper) PruneDelegationHistory(delegationHistory types.DelegationHistory
 
 	//remove any DelegationTimestamp that have a 0 amount amd compress DelegationHistory's down to a daily frequency
 	for _, delegationTimestamp := range delegationHistory.GetHistory() {
-		if !delegationTimestamp.GetBalance().Amount.Equal(sdk.NewInt(0)) {
+		if !delegationTimestamp.GetBalance().Amount.Equal(math.NewInt(0)) {
 			delegationHistoryNew.History = append(delegationHistoryNew.GetHistory(), delegationTimestamp)
 		}
 	}
@@ -164,7 +165,7 @@ func (k Keeper) PruneDelegationHistory(delegationHistory types.DelegationHistory
 }
 
 // NewDelegationTimestamp creates a new DelegationTimestamp
-func (k Keeper) NewDelegationTimestamp(ctx sdk.Context, amount sdk.Int) types.DelegationTimestamp {
+func (k Keeper) NewDelegationTimestamp(ctx sdk.Context, amount math.Int) types.DelegationTimestamp {
 	bt := time.Unix(ctx.BlockTime().Unix(), 0).UTC()
 	dt := time.Date(bt.Year(), bt.Month(), bt.Day(), 0, 0, 0, 0, bt.Location())
 	return types.DelegationTimestamp{
@@ -177,7 +178,7 @@ func (k Keeper) NewDelegationTimestamp(ctx sdk.Context, amount sdk.Int) types.De
 }
 
 // NewDelegationHistory creates a new DelegationHistory
-func (k Keeper) NewDelegationHistory(ctx sdk.Context, delAddr sdk.AccAddress, delegatedAmount sdk.Int) types.DelegationHistory {
+func (k Keeper) NewDelegationHistory(ctx sdk.Context, delAddr sdk.AccAddress, delegatedAmount math.Int) types.DelegationHistory {
 	delegationTimestamp := k.NewDelegationTimestamp(ctx, delegatedAmount)
 
 	delegationHistory := types.DelegationHistory{
