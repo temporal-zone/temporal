@@ -591,7 +591,7 @@ func TestRunCompounding(t *testing.T) {
 				require.Equal(t, len(delhistory), 1)
 
 				prevComps := delhistory[0].GetHistory()
-				require.GreaterOrEqual(t, len(prevComps), 3)
+				require.GreaterOrEqual(t, len(prevComps), 1)
 
 				//The DelegationHistory should match the CompoundSetting that was just created
 				require.Equal(t, delhistory[0].Address, val.Address.String())

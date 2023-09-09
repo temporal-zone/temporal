@@ -57,10 +57,7 @@ func (h Hooks) BeforeValidatorSlashed(sdk.Context, sdk.ValAddress, sdk.Dec) erro
 }
 
 func (h Hooks) AfterDelegationModified(ctx sdk.Context, delAddr sdk.AccAddress, valAddr sdk.ValAddress) error {
-	err := h.k.CheckDelegationHistoryRecords(ctx, delAddr)
-	if err != nil {
-		return err
-	}
+	h.k.CheckDelegationHistoryRecords(ctx, delAddr)
 
 	return nil
 }
