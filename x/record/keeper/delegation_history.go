@@ -73,7 +73,7 @@ func (k Keeper) CheckDelegationHistoryRecords(ctx sdk.Context, delAddr sdk.AccAd
 
 	//on a positive difference only add to a DelegationTimestamp or a new one to a DelegationHistory
 	if difference.IsPositive() {
-		delegationHistory = k.AddDelegationTimestamp(ctx, difference, delegationHistory)
+		delegationHistory = k.AddDelegationTimestamp(ctx, delegationHistory, difference)
 		k.SetDelegationHistory(ctx, delegationHistory)
 
 		return
@@ -116,12 +116,18 @@ func (k Keeper) CalcDelegationHistoryDifference(delegationAmount math.Int, deleg
 }
 
 // AddDelegationTimestamp adds or adjusts a DelegationTimestamp on an existing DelegationHistory record
-func (k Keeper) AddDelegationTimestamp(ctx sdk.Context, amount math.Int, delegationHistory types.DelegationHistory) types.DelegationHistory {
+func (k Keeper) AddDelegationTimestamp(ctx sdk.Context, delegationHistory types.DelegationHistory, amount math.Int) types.DelegationHistory {
+	addedToExisting := false
 	newDelTimestamp := k.NewDelegationTimestamp(ctx, amount)
 	for _, delTimestamp := range delegationHistory.GetHistory() {
 		if delTimestamp.GetTimestamp().Equal(newDelTimestamp.GetTimestamp()) {
 			delTimestamp.Balance = delTimestamp.Balance.Add(newDelTimestamp.GetBalance())
+			addedToExisting = true
 		}
+	}
+
+	if !addedToExisting {
+		delegationHistory.History = append(delegationHistory.GetHistory(), &newDelTimestamp)
 	}
 
 	return delegationHistory
