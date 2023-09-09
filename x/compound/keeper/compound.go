@@ -194,7 +194,7 @@ func (k Keeper) BuildCompoundActions(cs compTypes.CompoundSetting, amountToCompo
 // TotalCompoundAmount sums all delegations and extra balance amount
 func (k Keeper) TotalCompoundAmount(delegations []distrTypes.DelegationDelegatorReward, walletBalance sdk.Coin, cs compTypes.CompoundSetting) sdk.Coin {
 	// Sum the total staking claims
-	outstandingRewards := k.StakingCompoundAmount(delegations, walletBalance)
+	outstandingRewards := k.StakingCompoundAmount(delegations)
 
 	// Extra balance above CompoundSettings.AmountToRemain
 	extraCompoundAmount := k.ExtraCompoundAmount(cs, walletBalance)
@@ -202,8 +202,8 @@ func (k Keeper) TotalCompoundAmount(delegations []distrTypes.DelegationDelegator
 	return outstandingRewards.Add(extraCompoundAmount)
 }
 
-func (k Keeper) StakingCompoundAmount(delegations []distrTypes.DelegationDelegatorReward, walletBalance sdk.Coin) sdk.Coin {
-	outstandingRewards := sdk.Coin{Denom: walletBalance.Denom, Amount: sdk.NewInt(0)}
+func (k Keeper) StakingCompoundAmount(delegations []distrTypes.DelegationDelegatorReward) sdk.Coin {
+	outstandingRewards := sdk.Coin{Denom: sdk.DefaultBondDenom, Amount: sdk.NewInt(0)}
 	for _, delegation := range delegations {
 		for _, reward := range delegation.Reward {
 			if reward.Denom == sdk.DefaultBondDenom {
@@ -217,7 +217,7 @@ func (k Keeper) StakingCompoundAmount(delegations []distrTypes.DelegationDelegat
 
 // ExtraCompoundAmount calcs the diff between CompoundSettings.AmountToRemain and the wallet balance
 func (k Keeper) ExtraCompoundAmount(cs compTypes.CompoundSetting, walletBalance sdk.Coin) sdk.Coin {
-	extraCompoundAmount := sdk.Coin{Denom: walletBalance.Denom, Amount: sdk.NewInt(0)}
+	extraCompoundAmount := sdk.Coin{Denom: sdk.DefaultBondDenom, Amount: sdk.NewInt(0)}
 
 	if !cs.AmountToRemain.IsValid() {
 		return extraCompoundAmount

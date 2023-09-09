@@ -171,9 +171,7 @@ func TestStakingCompoundAmount(t *testing.T) {
 		},
 	}
 
-	walletBalance := sdk.NewCoin(bondDenom, sdk.NewInt(1000))
-
-	outstandingRewards := s.App.CompoundKeeper.StakingCompoundAmount(delegations, walletBalance)
+	outstandingRewards := s.App.CompoundKeeper.StakingCompoundAmount(delegations)
 
 	require.Equal(t, sdk.NewInt(300), outstandingRewards.Amount)
 	require.Equal(t, bondDenom, outstandingRewards.Denom)
@@ -181,24 +179,25 @@ func TestStakingCompoundAmount(t *testing.T) {
 
 func TestExtraCompoundAmount(t *testing.T) {
 	s := apptesting.SetupSuitelessTestHelper()
+	bondDenom := s.App.StakingKeeper.BondDenom(s.Ctx)
 
 	cs := compTypes.CompoundSetting{
-		AmountToRemain: sdk.NewCoin("uatom", sdk.NewInt(100000)),
+		AmountToRemain: sdk.NewCoin(bondDenom, sdk.NewInt(100000)),
 	}
-	walletBalance := sdk.NewCoin("uatom", sdk.NewInt(200000))
+	walletBalance := sdk.NewCoin(bondDenom, sdk.NewInt(200000))
 
 	extraCompoundAmount := s.App.CompoundKeeper.ExtraCompoundAmount(cs, walletBalance)
-	expectedExtraCompoundAmount := sdk.NewCoin("uatom", sdk.NewInt(100000))
+	expectedExtraCompoundAmount := sdk.NewCoin(bondDenom, sdk.NewInt(100000))
 	require.Equal(t, expectedExtraCompoundAmount, extraCompoundAmount)
 
-	walletBalance = sdk.NewCoin("uatom", sdk.NewInt(90000))
+	walletBalance = sdk.NewCoin(bondDenom, sdk.NewInt(90000))
 	extraCompoundAmount = s.App.CompoundKeeper.ExtraCompoundAmount(cs, walletBalance)
-	expectedExtraCompoundAmount = sdk.NewCoin("uatom", sdk.NewInt(0))
+	expectedExtraCompoundAmount = sdk.NewCoin(bondDenom, sdk.NewInt(0))
 	require.Equal(t, expectedExtraCompoundAmount, extraCompoundAmount)
 
 	cs.AmountToRemain = sdk.Coin{}
 	extraCompoundAmount = s.App.CompoundKeeper.ExtraCompoundAmount(cs, walletBalance)
-	expectedExtraCompoundAmount = sdk.NewCoin("uatom", sdk.NewInt(0))
+	expectedExtraCompoundAmount = sdk.NewCoin(bondDenom, sdk.NewInt(0))
 	require.Equal(t, expectedExtraCompoundAmount, extraCompoundAmount)
 }
 
