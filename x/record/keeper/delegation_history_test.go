@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	"github.com/temporal-zone/temporal/app/apptesting"
@@ -165,6 +164,58 @@ func TestDelegationTimestampsMultiDay(t *testing.T) {
 		numDays         int
 	}{
 		{
+			desc:           "Seven Days Mixed Uneven 1",
+			startingAmount: math.NewInt(1000),
+			differences: []math.Int{
+				math.NewInt(500),
+				math.NewInt(600),
+				math.NewInt(-2000),
+				math.NewInt(4500),
+				math.NewInt(2000),
+				math.NewInt(-5000),
+				math.NewInt(-1500)},
+			expectedAmounts: []math.Int{
+				math.NewInt(1500),
+				math.NewInt(2100),
+				math.NewInt(100),
+				math.NewInt(4600),
+				math.NewInt(6600),
+				math.NewInt(1600),
+				math.NewInt(100)},
+			numExpDaily: []int{2, 3, 1, 2, 3, 2, 1},
+			numDays:     7,
+		},
+		{
+			desc:           "Seven Days Mixed Uneven 2",
+			startingAmount: math.NewInt(1000),
+			differences: []math.Int{
+				math.NewInt(500),
+				math.NewInt(600),
+				math.NewInt(200),
+				math.NewInt(4500),
+				math.NewInt(2000),
+				math.NewInt(23200),
+				math.NewInt(-31000)},
+			expectedAmounts: []math.Int{
+				math.NewInt(1500),
+				math.NewInt(2100),
+				math.NewInt(2300),
+				math.NewInt(6800),
+				math.NewInt(8800),
+				math.NewInt(32000),
+				math.NewInt(1000)},
+			numExpDaily: []int{2, 3, 4, 5, 6, 7, 1},
+			numDays:     7,
+		},
+		{
+			desc:            "Three Days Mixed Uneven",
+			startingAmount:  math.NewInt(1000),
+			differences:     []math.Int{math.NewInt(500), math.NewInt(-600), math.NewInt(-200)},
+			expectedAmounts: []math.Int{math.NewInt(1500), math.NewInt(900), math.NewInt(700)},
+			numExpDaily:     []int{2, 1, 1},
+			numDays:         3,
+		},
+		{
 			desc:            "Two Days Additive",
 			startingAmount:  math.NewInt(1000),
 			differences:     []math.Int{math.NewInt(500), math.NewInt(500)},
@@ -178,6 +229,22 @@ func TestDelegationTimestampsMultiDay(t *testing.T) {
 			differences:     []math.Int{math.NewInt(-500), math.NewInt(-500)},
 			expectedAmounts: []math.Int{math.NewInt(500), math.NewInt(0)},
 			numExpDaily:     []int{1, 0},
+			numDays:         2,
+		},
+		{
+			desc:            "Two Days Mixed 1",
+			startingAmount:  math.NewInt(1000),
+			differences:     []math.Int{math.NewInt(500), math.NewInt(-500)},
+			expectedAmounts: []math.Int{math.NewInt(1500), math.NewInt(1000)},
+			numExpDaily:     []int{2, 1},
+			numDays:         2,
+		},
+		{
+			desc:            "Two Days Mixed 2",
+			startingAmount:  math.NewInt(1000),
+			differences:     []math.Int{math.NewInt(-500), math.NewInt(500)},
+			expectedAmounts: []math.Int{math.NewInt(500), math.NewInt(1000)},
+			numExpDaily:     []int{1, 2},
 			numDays:         2,
 		},
 	}
@@ -194,8 +261,6 @@ func TestDelegationTimestampsMultiDay(t *testing.T) {
 		ctx := s.Ctx.WithBlockTime(s.Ctx.BlockTime().Add(time.Hour * 24))
 
 		for i := 0; i < tc.numDays; i++ {
-			fmt.Println(ctx.BlockTime())
-
 			var adjustedDelHistory types.DelegationHistory
 
 			if tc.differences[i].IsPositive() {

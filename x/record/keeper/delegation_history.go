@@ -148,7 +148,7 @@ func (k Keeper) RemoveDelegationTimestamps(delegationHistory types.DelegationHis
 			break
 		} else {
 			absoluteDifference = absoluteDifference.Sub(delegationTimestamp.GetBalance().Amount)
-			delegationHistory.History[i].Balance.Amount = delegationTimestamp.GetBalance().Amount.Sub(absoluteDifference)
+			delegationHistory.History = delegationHistory.History[:len(delegationHistory.History)-1]
 		}
 	}
 
