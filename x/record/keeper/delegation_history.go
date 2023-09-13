@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"errors"
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/temporal-zone/temporal/x/record/types"
@@ -12,22 +12,14 @@ import (
 func (k Keeper) SetDelegationHistory(ctx sdk.Context, delegationHistory types.DelegationHistory) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DelegationHistoryKeyPrefix))
 	b := k.cdc.MustMarshal(&delegationHistory)
-	store.Set(types.DelegationHistoryKey(
-		delegationHistory.Address,
-	), b)
+	store.Set(types.DelegationHistoryKey(delegationHistory.Address), b)
 }
 
 // GetDelegationHistory returns a delegationHistory from its index
-func (k Keeper) GetDelegationHistory(
-	ctx sdk.Context,
-	address string,
-
-) (val types.DelegationHistory, found bool) {
+func (k Keeper) GetDelegationHistory(ctx sdk.Context, address string) (val types.DelegationHistory, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DelegationHistoryKeyPrefix))
 
-	b := store.Get(types.DelegationHistoryKey(
-		address,
-	))
+	b := store.Get(types.DelegationHistoryKey(address))
 	if b == nil {
 		return val, false
 	}
@@ -37,15 +29,9 @@ func (k Keeper) GetDelegationHistory(
 }
 
 // RemoveDelegationHistory removes a delegationHistory from the store
-func (k Keeper) RemoveDelegationHistory(
-	ctx sdk.Context,
-	address string,
-
-) {
+func (k Keeper) RemoveDelegationHistory(ctx sdk.Context, address string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DelegationHistoryKeyPrefix))
-	store.Delete(types.DelegationHistoryKey(
-		address,
-	))
+	store.Delete(types.DelegationHistoryKey(address))
 }
 
 // GetAllDelegationHistory returns all delegationHistory
@@ -65,53 +51,45 @@ func (k Keeper) GetAllDelegationHistory(ctx sdk.Context) (list []types.Delegatio
 }
 
 // CheckDelegationHistoryRecords checks if the accounts DelegationHistory record needs to be updated
-func (k Keeper) CheckDelegationHistoryRecords(ctx sdk.Context, delAddr sdk.AccAddress) error {
-	if k.stakingKeeper == nil {
-		panic("stakingKeeper is nil")
-	}
-
-	var (
-		delegationHistory types.DelegationHistory
-		found             bool
-		err               error
-	)
-
+func (k Keeper) CheckDelegationHistoryRecords(ctx sdk.Context, delAddr sdk.AccAddress) {
 	//current staked amount
 	delegatedAmount := k.CalcTotalDelegatedAmount(ctx, delAddr)
 
 	//if no DelegationHistory exists, create a new one
-	delegationHistory, found = k.GetDelegationHistory(ctx, delAddr.String())
+	delegationHistory, found := k.GetDelegationHistory(ctx, delAddr.String())
 	if !found {
 		delegationHistory = k.NewDelegationHistory(ctx, delAddr, delegatedAmount)
+		k.SetDelegationHistory(ctx, delegationHistory)
+
+		return
 	}
 
 	//calculates the difference between the sum of DelegationTimestamps balances in the DelegationHistory and the current amount staked
 	difference := k.CalcDelegationHistoryDifference(delegatedAmount, delegationHistory)
 
-	//on a positive difference only add a DelegationTimestamp to a DelegationHistory
+	if difference.IsZero() {
+		return
+	}
+
+	//on a positive difference only add to a DelegationTimestamp or a new one to a DelegationHistory
 	if difference.IsPositive() {
-		delegationHistory = k.AddDelegationTimestamp(ctx, difference, delegationHistory)
+		delegationHistory = k.AddDelegationTimestamp(ctx, delegationHistory, difference)
+		k.SetDelegationHistory(ctx, delegationHistory)
+
+		return
 	}
 
 	//on a negative difference it might adjust and/or remove a DelegationTimestamp in a DelegationHistory
 	if difference.IsNegative() {
-		delegationHistory, err = k.AdjustDelegationTimestamps(delegationHistory, difference)
-		if err != nil {
-			return err
-		}
+		delegationHistory = k.RemoveDelegationTimestamps(delegationHistory, difference)
+		k.SetDelegationHistory(ctx, delegationHistory)
+
+		return
 	}
-
-	//adjustDelegationTimestamps might set some DelegationTimestamps to 0, if so remove it from the DelegationHistory
-	prunedDelegationHistory := k.PruneDelegationHistory(delegationHistory)
-
-	//save changes made to the DelegationHistory
-	k.SetDelegationHistory(ctx, prunedDelegationHistory)
-
-	return nil
 }
 
 // CalcTotalDelegatedAmount gets all delegations shares, sums them and converts to bond denom
-func (k Keeper) CalcTotalDelegatedAmount(ctx sdk.Context, delAddr sdk.AccAddress) sdk.Int {
+func (k Keeper) CalcTotalDelegatedAmount(ctx sdk.Context, delAddr sdk.AccAddress) math.Int {
 	delegatedAmount := sdk.NewDec(0)
 	delegations := k.stakingKeeper.GetAllDelegatorDelegations(ctx, delAddr)
 
@@ -128,7 +106,7 @@ func (k Keeper) CalcTotalDelegatedAmount(ctx sdk.Context, delAddr sdk.AccAddress
 }
 
 // CalcDelegationHistoryDifference calculates the difference between the sum of bonded amounts in a DelegationHistory and the delegation amount
-func (k Keeper) CalcDelegationHistoryDifference(delegationAmount sdk.Int, delegationHistory types.DelegationHistory) sdk.Int {
+func (k Keeper) CalcDelegationHistoryDifference(delegationAmount math.Int, delegationHistory types.DelegationHistory) math.Int {
 	delegatedAmountHistory := sdk.NewInt(0)
 	for _, delegationHistory := range delegationHistory.GetHistory() {
 		delegatedAmountHistory = delegatedAmountHistory.Add(delegationHistory.GetBalance().Amount)
@@ -137,36 +115,44 @@ func (k Keeper) CalcDelegationHistoryDifference(delegationAmount sdk.Int, delega
 	return delegationAmount.Sub(delegatedAmountHistory)
 }
 
-// AddDelegationTimestamp adds a DelegationTimestamp to an existing DelegationHistory record
-func (k Keeper) AddDelegationTimestamp(ctx sdk.Context, amount sdk.Int, delegationHistory types.DelegationHistory) types.DelegationHistory {
-	delegationTimestamp := k.NewDelegationTimestamp(ctx, amount)
+// AddDelegationTimestamp adds or adjusts a DelegationTimestamp on an existing DelegationHistory record
+func (k Keeper) AddDelegationTimestamp(ctx sdk.Context, delegationHistory types.DelegationHistory, amount math.Int) types.DelegationHistory {
+	addedToExisting := false
+	newDelTimestamp := k.NewDelegationTimestamp(ctx, amount)
+	for _, delTimestamp := range delegationHistory.GetHistory() {
+		if delTimestamp.GetTimestamp().Equal(newDelTimestamp.GetTimestamp()) {
+			delTimestamp.Balance = delTimestamp.Balance.Add(newDelTimestamp.GetBalance())
+			addedToExisting = true
+		}
+	}
 
-	delegationHistory.History = append(delegationHistory.History, &delegationTimestamp)
+	if !addedToExisting {
+		delegationHistory.History = append(delegationHistory.GetHistory(), &newDelTimestamp)
+	}
 
 	return delegationHistory
 }
 
-// AdjustDelegationTimestamps removes DelegationsTimestamp(s) from a DelegationHistory
-func (k Keeper) AdjustDelegationTimestamps(delegationHistory types.DelegationHistory, difference sdk.Int) (types.DelegationHistory, error) {
-	if !difference.IsNegative() {
-		return delegationHistory, errors.New("difference has to be negative")
-	}
-
+// RemoveDelegationTimestamps removes or reduces DelegationsTimestamp(s) on a DelegationHistory
+func (k Keeper) RemoveDelegationTimestamps(delegationHistory types.DelegationHistory, difference math.Int) types.DelegationHistory {
 	absoluteDifference := difference.Abs()
 
 	for i := len(delegationHistory.GetHistory()) - 1; i >= 0; i-- {
 		delegationTimestamp := delegationHistory.GetHistory()[i]
 
-		if delegationTimestamp.GetBalance().Amount.GTE(absoluteDifference) {
+		if delegationTimestamp.GetBalance().Amount.Equal(absoluteDifference) {
+			delegationHistory.History = delegationHistory.History[:len(delegationHistory.History)-1]
+			break
+		} else if delegationTimestamp.GetBalance().Amount.GT(absoluteDifference) {
 			delegationHistory.History[i].Balance.Amount = delegationTimestamp.GetBalance().Amount.Sub(absoluteDifference)
 			break
 		} else {
 			absoluteDifference = absoluteDifference.Sub(delegationTimestamp.GetBalance().Amount)
-			delegationHistory.History[i].Balance.Amount = sdk.NewInt(0)
+			delegationHistory.History = delegationHistory.History[:len(delegationHistory.History)-1]
 		}
 	}
 
-	return delegationHistory, nil
+	return delegationHistory
 }
 
 // PruneDelegationHistory prune the DelegationTimestamp history in a DelegationHistory
@@ -174,20 +160,22 @@ func (k Keeper) PruneDelegationHistory(delegationHistory types.DelegationHistory
 	delegationHistoryNew := types.DelegationHistory{}
 	delegationHistoryNew.Address = delegationHistory.Address
 
-	//remove any DelegationTimestamp that have a 0 amount
+	//remove any DelegationTimestamp that have a 0 amount amd compress DelegationHistory's down to a daily frequency
 	for _, delegationTimestamp := range delegationHistory.GetHistory() {
-		if !delegationTimestamp.GetBalance().Amount.Equal(sdk.NewInt(0)) {
+		if !delegationTimestamp.GetBalance().Amount.Equal(math.NewInt(0)) {
 			delegationHistoryNew.History = append(delegationHistoryNew.GetHistory(), delegationTimestamp)
 		}
 	}
-	
+
 	return delegationHistoryNew
 }
 
 // NewDelegationTimestamp creates a new DelegationTimestamp
-func (k Keeper) NewDelegationTimestamp(ctx sdk.Context, amount sdk.Int) types.DelegationTimestamp {
+func (k Keeper) NewDelegationTimestamp(ctx sdk.Context, amount math.Int) types.DelegationTimestamp {
+	bt := time.Unix(ctx.BlockTime().Unix(), 0).UTC()
+	dt := time.Date(bt.Year(), bt.Month(), bt.Day(), 0, 0, 0, 0, bt.Location())
 	return types.DelegationTimestamp{
-		Timestamp: time.Unix(ctx.BlockTime().Unix(), 0),
+		Timestamp: dt,
 		Balance: sdk.NewCoin(
 			k.stakingKeeper.BondDenom(ctx),
 			amount,
@@ -196,7 +184,7 @@ func (k Keeper) NewDelegationTimestamp(ctx sdk.Context, amount sdk.Int) types.De
 }
 
 // NewDelegationHistory creates a new DelegationHistory
-func (k Keeper) NewDelegationHistory(ctx sdk.Context, delAddr sdk.AccAddress, delegatedAmount sdk.Int) types.DelegationHistory {
+func (k Keeper) NewDelegationHistory(ctx sdk.Context, delAddr sdk.AccAddress, delegatedAmount math.Int) types.DelegationHistory {
 	delegationTimestamp := k.NewDelegationTimestamp(ctx, delegatedAmount)
 
 	delegationHistory := types.DelegationHistory{

@@ -9,10 +9,12 @@ import (
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 var (
-	KeyNumberOfCompoundsPerBlock            = []byte("NumberOfCompoundsPerBlock")
-	KeyMinimumCompoundFrequency             = []byte("MinimumCompoundFrequency")
-	DefaultNumberOfCompoundsPerBlock uint64 = 100
-	DefaultMinimumCompoundFrequency  uint64 = 600
+	KeyNumberOfCompoundsPerBlock           = []byte("NumberOfCompoundsPerBlock")
+	KeyMinimumCompoundFrequency            = []byte("MinimumCompoundFrequency")
+	KeyCompoundModuleEnabled               = []byte("CompoundModuleEnabled")
+	DefaultNumberOfCompoundsPerBlock int64 = 100
+	DefaultMinimumCompoundFrequency  int64 = 100
+	DefaultCompoundModuleEnabled     bool  = true
 )
 
 // ParamKeyTable the param key table for launch module
@@ -21,10 +23,11 @@ func ParamKeyTable() paramtypes.KeyTable {
 }
 
 // NewParams creates a new Params instance
-func NewParams(numberOfCompoundsPerBlock uint64, minimumCompoundFrequency uint64) Params {
+func NewParams(numberOfCompoundsPerBlock int64, minimumCompoundFrequency int64, compoundModuleEnabled bool) Params {
 	return Params{
 		NumberOfCompoundsPerBlock: numberOfCompoundsPerBlock,
 		MinimumCompoundFrequency:  minimumCompoundFrequency,
+		CompoundModuleEnabled:     compoundModuleEnabled,
 	}
 }
 
@@ -33,6 +36,7 @@ func DefaultParams() Params {
 	return NewParams(
 		DefaultNumberOfCompoundsPerBlock,
 		DefaultMinimumCompoundFrequency,
+		DefaultCompoundModuleEnabled,
 	)
 }
 
@@ -41,6 +45,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyNumberOfCompoundsPerBlock, &p.NumberOfCompoundsPerBlock, validateNumberOfCompoundsPerBlock),
 		paramtypes.NewParamSetPair(KeyMinimumCompoundFrequency, &p.MinimumCompoundFrequency, validateMinimumCompoundFrequency),
+		paramtypes.NewParamSetPair(KeyCompoundModuleEnabled, &p.CompoundModuleEnabled, validateCompoundModuleEnabled),
 	}
 }
 
@@ -65,7 +70,7 @@ func (p Params) String() string {
 
 // validateNumberOfCompoundsPerBlock validates the NumberOfCompoundsPerBlock param
 func validateNumberOfCompoundsPerBlock(v interface{}) error {
-	numberOfCompoundsPerBlock, ok := v.(uint64)
+	numberOfCompoundsPerBlock, ok := v.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", v)
 	}
@@ -79,13 +84,23 @@ func validateNumberOfCompoundsPerBlock(v interface{}) error {
 
 // validateMinimumCompoundFrequency the NumberOfCompoundsPerBlock param
 func validateMinimumCompoundFrequency(v interface{}) error {
-	minimumCompoundFrequency, ok := v.(uint64)
+	minimumCompoundFrequency, ok := v.(int64)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", v)
 	}
 
 	if minimumCompoundFrequency < 1 {
 		return fmt.Errorf("MinimumCompoundFrequency can't be less than 1: %d", minimumCompoundFrequency)
+	}
+
+	return nil
+}
+
+// validateMinimumCompoundFrequency the NumberOfCompoundsPerBlock param
+func validateCompoundModuleEnabled(v interface{}) error {
+	_, ok := v.(bool)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", v)
 	}
 
 	return nil

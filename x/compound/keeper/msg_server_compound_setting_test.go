@@ -228,7 +228,7 @@ func TestCompoundSettingMsgServerDelete(t *testing.T) {
 func TestCheckFrequency(t *testing.T) {
 	tests := []struct {
 		desc    string
-		request uint64
+		request int64
 		err     error
 	}{
 		{

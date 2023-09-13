@@ -8,6 +8,7 @@ option go_package = "github.com/temporal-zone/temporal/x/compound/types";
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-  uint64 numberOfCompoundsPerBlock = 1 [(gogoproto.moretags) = "yaml:\"number_of_compounds_per_block\""];
-  uint64 minimumCompoundFrequency = 2 [(gogoproto.moretags) = "yaml:\"minimum_compound_frequency\""];
+  int64 numberOfCompoundsPerBlock = 1 [(gogoproto.moretags) = "yaml:\"number_of_compounds_per_block\""];
+  int64 minimumCompoundFrequency = 2 [(gogoproto.moretags) = "yaml:\"minimum_compound_frequency\""];
+  bool compoundModuleEnabled = 3 [(gogoproto.moretags) = "yaml:\"compound_module_enabled\""];
 }

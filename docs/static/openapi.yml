@@ -46480,7 +46480,7 @@ paths:
                         signatures required by gogoproto.
                     frequency:
                       type: string
-                      format: uint64
+                      format: int64
               pagination:
                 type: object
                 properties:
@@ -46628,7 +46628,7 @@ paths:
                       signatures required by gogoproto.
                   frequency:
                     type: string
-                    format: uint64
+                    format: int64
         default:
           description: An unexpected error response.
           schema:
@@ -46670,10 +46670,12 @@ paths:
                 properties:
                   numberOfCompoundsPerBlock:
                     type: string
-                    format: uint64
+                    format: int64
                   minimumCompoundFrequency:
                     type: string
-                    format: uint64
+                    format: int64
+                  compoundModuleEnabled:
+                    type: boolean
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -46713,9 +46715,9 @@ paths:
                   properties:
                     delegator:
                       type: string
-                    timestamp:
+                    blockHeight:
                       type: string
-                      format: date-time
+                      format: int64
               pagination:
                 type: object
                 properties:
@@ -46836,9 +46838,9 @@ paths:
                 properties:
                   delegator:
                     type: string
-                  timestamp:
+                  blockHeight:
                     type: string
-                    format: date-time
+                    format: int64
         default:
           description: An unexpected error response.
           schema:
@@ -75877,7 +75879,7 @@ definitions:
           signatures required by gogoproto.
       frequency:
         type: string
-        format: uint64
+        format: int64
   temporal.compound.MsgCreateCompoundSettingResponse:
     type: object
   temporal.compound.MsgDeleteCompoundSettingResponse:
@@ -75889,19 +75891,21 @@ definitions:
     properties:
       numberOfCompoundsPerBlock:
         type: string
-        format: uint64
+        format: int64
       minimumCompoundFrequency:
         type: string
-        format: uint64
+        format: int64
+      compoundModuleEnabled:
+        type: boolean
     description: Params defines the parameters for the module.
   temporal.compound.PreviousCompound:
     type: object
     properties:
       delegator:
         type: string
-      timestamp:
+      blockHeight:
         type: string
-        format: date-time
+        format: int64
   temporal.compound.QueryAllCompoundSettingResponse:
     type: object
     properties:
@@ -75939,7 +75943,7 @@ definitions:
                 signatures required by gogoproto.
             frequency:
               type: string
-              format: uint64
+              format: int64
       pagination:
         type: object
         properties:
@@ -75976,9 +75980,9 @@ definitions:
           properties:
             delegator:
               type: string
-            timestamp:
+            blockHeight:
               type: string
-              format: date-time
+              format: int64
       pagination:
         type: object
         properties:
@@ -76040,7 +76044,7 @@ definitions:
               signatures required by gogoproto.
           frequency:
             type: string
-            format: uint64
+            format: int64
   temporal.compound.QueryGetPreviousCompoundResponse:
     type: object
     properties:
@@ -76049,9 +76053,9 @@ definitions:
         properties:
           delegator:
             type: string
-          timestamp:
+          blockHeight:
             type: string
-            format: date-time
+            format: int64
   temporal.compound.QueryParamsResponse:
     type: object
     properties:
@@ -76061,10 +76065,12 @@ definitions:
         properties:
           numberOfCompoundsPerBlock:
             type: string
-            format: uint64
+            format: int64
           minimumCompoundFrequency:
             type: string
-            format: uint64
+            format: int64
+          compoundModuleEnabled:
+            type: boolean
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   temporal.compound.ValidatorSetting:
     type: object

@@ -13,7 +13,7 @@ import (
 
 func CmdCreateCompoundSetting() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-compound-setting [validator-setting] [amount-to-remain] [frequency]",
+		Use:   "create-compound-setting [validator-setting] [amount-to-remain] [frequency-in-blocks]",
 		Short: "Create a new CompoundSetting for yourself",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -32,7 +32,7 @@ func CmdCreateCompoundSetting() *cobra.Command {
 				}
 			}
 
-			argFrequency, err := cast.ToUint64E(args[2])
+			argFrequency, err := cast.ToInt64E(args[2])
 			if err != nil {
 				return err
 			}
@@ -62,7 +62,7 @@ func CmdCreateCompoundSetting() *cobra.Command {
 
 func CmdUpdateCompoundSetting() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-compound-setting [validator-setting] [amount-to-remain] [frequency]",
+		Use:   "update-compound-setting [validator-setting] [amount-to-remain] [frequency-in-blocks]",
 		Short: "Update your own CompoundSetting",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
@@ -81,7 +81,7 @@ func CmdUpdateCompoundSetting() *cobra.Command {
 				}
 			}
 
-			argFrequency, err := cast.ToUint64E(args[2])
+			argFrequency, err := cast.ToInt64E(args[2])
 			if err != nil {
 				return err
 			}

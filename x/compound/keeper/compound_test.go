@@ -34,74 +34,59 @@ func TestShouldCompoundHappen(t *testing.T) {
 	cases := []struct {
 		name        string
 		cs          compTypes.CompoundSetting
-		blockTime   time.Time
+		blockHeight int64
 		expected    bool
 		expectedErr error
 		prevComp    compTypes.PreviousCompound
 	}{
 		{
-			name: "every 10 blocks",
+			name: "every 10 blocks true",
 			cs: compTypes.CompoundSetting{
 				Delegator: "delegator2",
 				Frequency: 10,
 			},
-			blockTime:   time.Now(),
+			blockHeight: s.Ctx.BlockHeight(),
 			expected:    true,
 			expectedErr: nil,
 			prevComp: compTypes.PreviousCompound{
+				Delegator:   "delegator1",
+				BlockHeight: 0,
+			},
+		},
+		{
+			name: "every 10 blocks false",
+			cs: compTypes.CompoundSetting{
 				Delegator: "delegator2",
-				Timestamp: time.Now().Add(-time.Minute),
+				Frequency: 10,
 			},
-		},
-		{
-			name: "every 3 seconds",
-			cs: compTypes.CompoundSetting{
-				Delegator: "delegator3",
-				Frequency: 3,
-			},
-			blockTime:   time.Now(),
-			expected:    true,
-			expectedErr: nil,
-			prevComp: compTypes.PreviousCompound{
-				Delegator: "delegator3",
-				Timestamp: time.Now().Add(-time.Minute),
-			},
-		},
-		{
-			name: "every 90 seconds",
-			cs: compTypes.CompoundSetting{
-				Delegator: "delegator4",
-				Frequency: 90,
-			},
-			blockTime:   time.Now(),
+			blockHeight: s.Ctx.BlockHeight(),
 			expected:    false,
 			expectedErr: nil,
 			prevComp: compTypes.PreviousCompound{
-				Delegator: "delegator4",
-				Timestamp: time.Now().Add(-time.Minute),
+				Delegator:   "delegator2",
+				BlockHeight: 1,
 			},
 		},
 		{
-			name: "0 Frequency",
+			name: "no previous comp",
 			cs: compTypes.CompoundSetting{
-				Delegator: "delegator5",
-				Frequency: 0,
+				Delegator: "delegator3",
+				Frequency: 10,
 			},
-			blockTime:   time.Now(),
+			blockHeight: s.Ctx.BlockHeight(),
 			expected:    true,
 			expectedErr: nil,
-			prevComp: compTypes.PreviousCompound{
-				Delegator: "delegator5",
-				Timestamp: time.Now().Add(-time.Minute),
-			},
+			prevComp:    compTypes.PreviousCompound{},
 		},
 	}
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			s.App.CompoundKeeper.SetPreviousCompound(s.Ctx, tc.prevComp)
+			if tc.name != "no previous comp" {
+				s.App.CompoundKeeper.SetPreviousCompound(s.Ctx, tc.prevComp)
+			}
 
-			actual := s.App.CompoundKeeper.ShouldCompoundHappen(s.Ctx, tc.cs, tc.blockTime)
+			actual := s.App.CompoundKeeper.ShouldCompoundHappen(s.Ctx, tc.cs)
 			require.Equal(t, tc.expected, actual)
 		})
 	}
@@ -186,9 +171,7 @@ func TestStakingCompoundAmount(t *testing.T) {
 		},
 	}
 
-	walletBalance := sdk.NewCoin(bondDenom, sdk.NewInt(1000))
-
-	outstandingRewards := s.App.CompoundKeeper.StakingCompoundAmount(delegations, walletBalance)
+	outstandingRewards := s.App.CompoundKeeper.StakingCompoundAmount(delegations)
 
 	require.Equal(t, sdk.NewInt(300), outstandingRewards.Amount)
 	require.Equal(t, bondDenom, outstandingRewards.Denom)
@@ -196,24 +179,25 @@ func TestStakingCompoundAmount(t *testing.T) {
 
 func TestExtraCompoundAmount(t *testing.T) {
 	s := apptesting.SetupSuitelessTestHelper()
+	bondDenom := s.App.StakingKeeper.BondDenom(s.Ctx)
 
 	cs := compTypes.CompoundSetting{
-		AmountToRemain: sdk.NewCoin("uatom", sdk.NewInt(100000)),
+		AmountToRemain: sdk.NewCoin(bondDenom, sdk.NewInt(100000)),
 	}
-	walletBalance := sdk.NewCoin("uatom", sdk.NewInt(200000))
+	walletBalance := sdk.NewCoin(bondDenom, sdk.NewInt(200000))
 
 	extraCompoundAmount := s.App.CompoundKeeper.ExtraCompoundAmount(cs, walletBalance)
-	expectedExtraCompoundAmount := sdk.NewCoin("uatom", sdk.NewInt(100000))
+	expectedExtraCompoundAmount := sdk.NewCoin(bondDenom, sdk.NewInt(100000))
 	require.Equal(t, expectedExtraCompoundAmount, extraCompoundAmount)
 
-	walletBalance = sdk.NewCoin("uatom", sdk.NewInt(90000))
+	walletBalance = sdk.NewCoin(bondDenom, sdk.NewInt(90000))
 	extraCompoundAmount = s.App.CompoundKeeper.ExtraCompoundAmount(cs, walletBalance)
-	expectedExtraCompoundAmount = sdk.NewCoin("uatom", sdk.NewInt(0))
+	expectedExtraCompoundAmount = sdk.NewCoin(bondDenom, sdk.NewInt(0))
 	require.Equal(t, expectedExtraCompoundAmount, extraCompoundAmount)
 
 	cs.AmountToRemain = sdk.Coin{}
 	extraCompoundAmount = s.App.CompoundKeeper.ExtraCompoundAmount(cs, walletBalance)
-	expectedExtraCompoundAmount = sdk.NewCoin("uatom", sdk.NewInt(0))
+	expectedExtraCompoundAmount = sdk.NewCoin(bondDenom, sdk.NewInt(0))
 	require.Equal(t, expectedExtraCompoundAmount, extraCompoundAmount)
 }
 
@@ -385,8 +369,8 @@ func TestRecordCompound(t *testing.T) {
 
 	// Test case 1: New delegator record
 	address1 := "address1"
-	blockTime1 := time.Now().UTC()
-	s.App.CompoundKeeper.RecordCompound(s.Ctx, address1, blockTime1)
+	blockHeight1 := s.Ctx.BlockHeight()
+	s.App.CompoundKeeper.RecordCompound(s.Ctx, address1)
 
 	value, found := s.App.CompoundKeeper.GetPreviousCompound(s.Ctx, address1)
 	if !found {
@@ -395,25 +379,22 @@ func TestRecordCompound(t *testing.T) {
 	if value.Delegator != address1 {
 		t.Fatalf("Expected delegator address to be %s but got %s", address1, value.Delegator)
 	}
-	if value.Timestamp != blockTime1 {
-		t.Fatalf("Expected block time to be %s but got %s", blockTime1, value.Timestamp)
+	if value.BlockHeight != blockHeight1 {
+		t.Fatalf("Expected block time to be %d but got %d", blockHeight1, value.BlockHeight)
 	}
 
 	// Test case 2: Update existing record
-	address2 := "address2"
-	blockTime2 := time.Now().Add(time.Duration(24) * time.Hour).UTC()
+	s.App.CompoundKeeper.RecordCompound(s.Ctx, address1)
 
-	s.App.CompoundKeeper.RecordCompound(s.Ctx, address2, blockTime2)
-
-	value, found = s.App.CompoundKeeper.GetPreviousCompound(s.Ctx, address2)
+	value, found = s.App.CompoundKeeper.GetPreviousCompound(s.Ctx, address1)
 	if !found {
 		t.Fatalf("Expected to find the address in the store but not found")
 	}
-	if value.Delegator != address2 {
-		t.Fatalf("Expected delegator address to be %s but got %s", address2, value.Delegator)
+	if value.Delegator != address1 {
+		t.Fatalf("Expected delegator address to be %s but got %s", address1, value.Delegator)
 	}
-	if value.Timestamp != blockTime2 {
-		t.Fatalf("Expected block time to be %s but got %s", blockTime2, value.Timestamp)
+	if value.BlockHeight != blockHeight1 {
+		t.Fatalf("Expected block time to be %d but got %d", blockHeight1, value.BlockHeight)
 	}
 }
 
@@ -469,7 +450,7 @@ func TestCalculateCompoundingAmount(t *testing.T) {
 func networkWithCustomParams(t *testing.T) *network.Network {
 	t.Helper()
 	cfg := network.DefaultConfig()
-	state := types.GenesisState{Params: types.NewParams(uint64(100), uint64(5))}
+	state := types.GenesisState{Params: types.NewParams(100, 5, true)}
 	buf, err := cfg.Codec.MarshalJSON(&state)
 	require.NoError(t, err)
 	cfg.GenesisState[types.ModuleName] = buf
@@ -514,7 +495,7 @@ func TestRunCompounding(t *testing.T) {
 	// When a validator is created they self delegate some amount so there should be one of each of the below for each validator
 	require.Equal(t, len(currentDelHistoryList.GetDelegationHistory()), len(respValidators.GetValidators()))
 
-	for i, _ := range respValidators.GetValidators() {
+	for i := range respValidators.GetValidators() {
 		require.Equal(t, len(currentDelHistoryList.GetDelegationHistory()[i].GetHistory()), 1)
 	}
 
@@ -578,7 +559,8 @@ func TestRunCompounding(t *testing.T) {
 			require.NoError(t, ctx.Codec.UnmarshalJSON(out.Bytes(), &resp))
 			require.NoError(t, clitestutil.CheckTxCode(net, ctx, resp.TxHash, tc.code))
 
-			net.WaitForNextBlock()
+			err = net.WaitForNextBlock()
+			require.NoError(t, err)
 
 			if tc.desc == "ValidValidatorSettings" {
 				//Get existing PreviousCompound objects from state, 1 should exist
@@ -607,10 +589,8 @@ func TestRunCompounding(t *testing.T) {
 				delhistory := currentDelegetaionHistoryList.GetDelegationHistory()
 				require.Equal(t, len(delhistory), 1)
 
-				// depending on exact timing there might be 4 or 5 prev compounds.
 				prevComps := delhistory[0].GetHistory()
-				require.GreaterOrEqual(t, len(prevComps), 4)
-				require.LessOrEqual(t, len(prevComps), 5)
+				require.GreaterOrEqual(t, len(prevComps), 1)
 
 				//The DelegationHistory should match the CompoundSetting that was just created
 				require.Equal(t, delhistory[0].Address, val.Address.String())

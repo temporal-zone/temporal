@@ -59,8 +59,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// CheckFrequency checks to make sure frequency should be no less than X seconds.
-func (k Keeper) CheckFrequency(ctx sdk.Context, onceEvery uint64) uint64 {
+// CheckFrequency checks to make sure frequency should be no less than X blocks.
+func (k Keeper) CheckFrequency(ctx sdk.Context, onceEvery int64) int64 {
 	minimumCompoundFrequency := k.MinimumCompoundFrequency(ctx)
 	if onceEvery < minimumCompoundFrequency {
 		return minimumCompoundFrequency

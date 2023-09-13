@@ -8,7 +8,6 @@ import (
 	stakingTypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	compTypes "github.com/temporal-zone/temporal/x/compound/types"
 	"strconv"
-	"time"
 )
 
 type StakingCompoundAction struct {
@@ -18,66 +17,66 @@ type StakingCompoundAction struct {
 }
 
 // RunCompounding gets all CompoundSettings and attempts to Compound them
-func (k Keeper) RunCompounding(ctx sdk.Context) error {
-
-	// TODO: Profile/Benchmark what 100, 1K, 10K, 100K of compounds in one block does to block time/other resource usage?
+func (k Keeper) RunCompounding(ctx sdk.Context) {
 	numberOfCompoundsTemp := k.NumberOfCompoundsPerBlock(ctx)
 	compSettings := k.GetAllCompoundSetting(ctx)
 
 	for _, compSetting := range compSettings {
-		if !k.ShouldCompoundHappen(ctx, compSetting, ctx.BlockTime()) {
+		if !k.ShouldCompoundHappen(ctx, compSetting) {
 			continue
 		}
 
-		err := k.Compound(ctx, compSetting)
+		compoundHappened, err := k.Compound(ctx, compSetting)
 		if err != nil {
-			return err
+			// A compounding error should not halt the network, so it gets logged to error.
+			k.Logger(ctx).Error("compound error: " + err.Error())
+			continue
 		}
 
-		numberOfCompoundsTemp--
+		if compoundHappened {
+			numberOfCompoundsTemp--
+		}
 
 		if numberOfCompoundsTemp <= 0 {
-			k.Logger(ctx).Info("Compounds in this block: 100")
-			return nil
+			break
 		}
 	}
 
 	k.Logger(ctx).Info("Compounds in this block: " + strconv.Itoa(int(k.NumberOfCompoundsPerBlock(ctx)-numberOfCompoundsTemp)))
-	return nil
 }
 
-func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) error {
+func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) (bool, error) {
 	address, err := sdk.AccAddressFromBech32(cs.Delegator)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// Get all active delegations
 	delegations, err := k.DelegationTotalRewards(ctx, address.String())
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// Calculate total rewards that can be claimed and delegated
 	walletBalance := k.bankKeeper.GetBalance(ctx, address, sdk.DefaultBondDenom)
 	amountToCompound := k.TotalCompoundAmount(delegations, walletBalance, cs)
-	if amountToCompound.Amount.LT(sdk.NewInt(0)) {
+	if amountToCompound.Amount.IsNegative() {
 		//TODO: Better error output that logs the delegations and compound settings
-		return errors.New("amountToCompound is below 0 for: " + cs.Delegator)
+		return false, errors.New("amountToCompound is below 0 for: " + cs.Delegator)
 	}
 
-	if amountToCompound.Amount.Equal(sdk.NewInt(0)) {
-		return nil
+	if amountToCompound.Amount.IsZero() {
+		return false, nil
 	}
 
 	// Calculate each CompoundSettings validators compound amount
 	totalCompoundPercent, compoundActions := k.BuildCompoundActions(cs, amountToCompound)
 	if len(compoundActions) == 0 {
-		return nil
+		return false, nil
 	}
 
 	if totalCompoundPercent.GT(sdk.NewInt(100)) {
-		return errors.New("totalCompoundPercent can't be over 100")
+		return false, errors.New("totalCompoundPercent can't be over 100")
 	}
 
 	// Handle any leftover amount if 100% of rewards are to be compounded by adding any leftover amount to their first validator
@@ -96,12 +95,12 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) error {
 	for _, delegation := range delegations {
 		valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
 		if err != nil {
-			return err
+			return false, err
 		}
 
 		_, err = k.distrKeeper.WithdrawDelegationRewards(ctx, address, valAddr)
 		if err != nil {
-			return err
+			return false, err
 		}
 	}
 
@@ -114,24 +113,23 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) error {
 	for _, compoundAction := range compoundActions {
 		err := Delegate(ctx, k, compoundAction, address)
 		if err != nil {
-			return err
+			return false, err
 		}
 	}
 
-	return nil
+	return true, nil
 }
 
 // ShouldCompoundHappen compares the last time a compounding happened
-func (k Keeper) ShouldCompoundHappen(ctx sdk.Context, cs compTypes.CompoundSetting, blockTime time.Time) bool {
+func (k Keeper) ShouldCompoundHappen(ctx sdk.Context, cs compTypes.CompoundSetting) bool {
 	previousCompound, found := k.GetPreviousCompound(ctx, cs.Delegator)
 	if !found {
 		return true
 	}
 
-	duration := time.Duration(cs.Frequency) * time.Second
-	nextCompoundTime := previousCompound.Timestamp.Add(duration)
+	nextCompoundTime := previousCompound.BlockHeight + cs.Frequency
 
-	return blockTime.After(nextCompoundTime)
+	return ctx.BlockHeight() >= nextCompoundTime
 }
 
 // Delegate is a helper method that delegates
@@ -151,7 +149,7 @@ func Delegate(ctx sdk.Context, k Keeper, compoundAction StakingCompoundAction, a
 		return err
 	}
 
-	k.RecordCompound(ctx, address.String(), ctx.BlockTime())
+	k.RecordCompound(ctx, address.String())
 
 	return nil
 }
@@ -196,7 +194,7 @@ func (k Keeper) BuildCompoundActions(cs compTypes.CompoundSetting, amountToCompo
 // TotalCompoundAmount sums all delegations and extra balance amount
 func (k Keeper) TotalCompoundAmount(delegations []distrTypes.DelegationDelegatorReward, walletBalance sdk.Coin, cs compTypes.CompoundSetting) sdk.Coin {
 	// Sum the total staking claims
-	outstandingRewards := k.StakingCompoundAmount(delegations, walletBalance)
+	outstandingRewards := k.StakingCompoundAmount(delegations)
 
 	// Extra balance above CompoundSettings.AmountToRemain
 	extraCompoundAmount := k.ExtraCompoundAmount(cs, walletBalance)
@@ -204,8 +202,8 @@ func (k Keeper) TotalCompoundAmount(delegations []distrTypes.DelegationDelegator
 	return outstandingRewards.Add(extraCompoundAmount)
 }
 
-func (k Keeper) StakingCompoundAmount(delegations []distrTypes.DelegationDelegatorReward, walletBalance sdk.Coin) sdk.Coin {
-	outstandingRewards := sdk.Coin{Denom: walletBalance.Denom, Amount: sdk.NewInt(0)}
+func (k Keeper) StakingCompoundAmount(delegations []distrTypes.DelegationDelegatorReward) sdk.Coin {
+	outstandingRewards := sdk.Coin{Denom: sdk.DefaultBondDenom, Amount: sdk.NewInt(0)}
 	for _, delegation := range delegations {
 		for _, reward := range delegation.Reward {
 			if reward.Denom == sdk.DefaultBondDenom {
@@ -219,7 +217,7 @@ func (k Keeper) StakingCompoundAmount(delegations []distrTypes.DelegationDelegat
 
 // ExtraCompoundAmount calcs the diff between CompoundSettings.AmountToRemain and the wallet balance
 func (k Keeper) ExtraCompoundAmount(cs compTypes.CompoundSetting, walletBalance sdk.Coin) sdk.Coin {
-	extraCompoundAmount := sdk.Coin{Denom: walletBalance.Denom, Amount: sdk.NewInt(0)}
+	extraCompoundAmount := sdk.Coin{Denom: sdk.DefaultBondDenom, Amount: sdk.NewInt(0)}
 
 	if !cs.AmountToRemain.IsValid() {
 		return extraCompoundAmount
@@ -233,11 +231,11 @@ func (k Keeper) ExtraCompoundAmount(cs compTypes.CompoundSetting, walletBalance 
 }
 
 // RecordCompound records the compounding timestamp
-func (k Keeper) RecordCompound(ctx sdk.Context, address string, blockTime time.Time) {
+func (k Keeper) RecordCompound(ctx sdk.Context, address string) {
 	value, _ := k.GetPreviousCompound(ctx, address)
 
 	value.Delegator = address
-	value.Timestamp = blockTime
+	value.BlockHeight = ctx.BlockHeight()
 
 	k.SetPreviousCompound(ctx, value)
 }

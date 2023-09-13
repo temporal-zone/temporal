@@ -10,18 +10,14 @@ import (
 func (k Keeper) SetPreviousCompound(ctx sdk.Context, previousCompound types.PreviousCompound) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PreviousCompoundKeyPrefix))
 	b := k.cdc.MustMarshal(&previousCompound)
-	store.Set(types.PreviousCompoundKey(
-		previousCompound.Delegator,
-	), b)
+	store.Set(types.PreviousCompoundKey(previousCompound.Delegator), b)
 }
 
 // GetPreviousCompound returns a previousCompound from its index
 func (k Keeper) GetPreviousCompound(ctx sdk.Context, delegator string) (val types.PreviousCompound, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PreviousCompoundKeyPrefix))
 
-	b := store.Get(types.PreviousCompoundKey(
-		delegator,
-	))
+	b := store.Get(types.PreviousCompoundKey(delegator))
 	if b == nil {
 		return val, false
 	}

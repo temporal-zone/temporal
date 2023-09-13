@@ -15,21 +15,21 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func createNCompoundSetting(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.CompoundSetting {
+func createNCompoundSetting(k *keeper.Keeper, ctx sdk.Context, n int) []types.CompoundSetting {
 	items := make([]types.CompoundSetting, n)
 	for i := range items {
 		items[i].Delegator = strconv.Itoa(i)
 
-		keeper.SetCompoundSetting(ctx, items[i])
+		k.SetCompoundSetting(ctx, items[i])
 	}
 	return items
 }
 
 func TestCompoundSettingGet(t *testing.T) {
-	keeper, ctx := keepertest.CompoundKeeper(t)
-	items := createNCompoundSetting(keeper, ctx, 10)
+	k, ctx := keepertest.CompoundKeeper(t)
+	items := createNCompoundSetting(k, ctx, 10)
 	for _, item := range items {
-		rst, found := keeper.GetCompoundSetting(ctx,
+		rst, found := k.GetCompoundSetting(ctx,
 			item.Delegator,
 		)
 		require.True(t, found)
@@ -40,13 +40,13 @@ func TestCompoundSettingGet(t *testing.T) {
 	}
 }
 func TestCompoundSettingRemove(t *testing.T) {
-	keeper, ctx := keepertest.CompoundKeeper(t)
-	items := createNCompoundSetting(keeper, ctx, 10)
+	k, ctx := keepertest.CompoundKeeper(t)
+	items := createNCompoundSetting(k, ctx, 10)
 	for _, item := range items {
-		keeper.RemoveCompoundSetting(ctx,
+		k.RemoveCompoundSetting(ctx,
 			item.Delegator,
 		)
-		_, found := keeper.GetCompoundSetting(ctx,
+		_, found := k.GetCompoundSetting(ctx,
 			item.Delegator,
 		)
 		require.False(t, found)
@@ -54,10 +54,10 @@ func TestCompoundSettingRemove(t *testing.T) {
 }
 
 func TestCompoundSettingGetAll(t *testing.T) {
-	keeper, ctx := keepertest.CompoundKeeper(t)
-	items := createNCompoundSetting(keeper, ctx, 10)
+	k, ctx := keepertest.CompoundKeeper(t)
+	items := createNCompoundSetting(k, ctx, 10)
 	require.ElementsMatch(t,
 		nullify.Fill(items),
-		nullify.Fill(keeper.GetAllCompoundSetting(ctx)),
+		nullify.Fill(k.GetAllCompoundSetting(ctx)),
 	)
 }
