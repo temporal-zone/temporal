@@ -1,0 +1,11 @@
+syntax = "proto3";
+package temporal.record;
+
+option go_package = "github.com/temporal-zone/temporal/x/record/types";
+
+message UserInstructions {
+  string address = 1; 
+  string userInstruction = 2; 
+  
+}
+

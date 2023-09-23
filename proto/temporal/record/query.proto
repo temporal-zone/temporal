@@ -8,6 +8,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "temporal/record/params.proto";
 import "temporal/record/delegation_history.proto";
 import "temporal/record/delegation_timestamp.proto";
+import "temporal/record/user_instructions.proto";
 
 option go_package = "github.com/temporal-zone/temporal/x/record/types";
 
@@ -27,6 +28,16 @@ service Query {
   }
   rpc DelegationHistoryAll (QueryAllDelegationHistoryRequest) returns (QueryAllDelegationHistoryResponse) {
     option (google.api.http).get = "/temporal/record/delegation_history";
+  
+  }
+  
+  // Queries a list of UserInstructions items.
+  rpc UserInstructions    (QueryGetUserInstructionsRequest) returns (QueryGetUserInstructionsResponse) {
+    option (google.api.http).get = "/temporal-zone/temporal/record/user_instructions/{address}";
+  
+  }
+  rpc UserInstructionsAll (QueryAllUserInstructionsRequest) returns (QueryAllUserInstructionsResponse) {
+    option (google.api.http).get = "/temporal-zone/temporal/record/user_instructions";
   
   }
 }
@@ -55,5 +66,22 @@ message QueryAllDelegationHistoryRequest {
 message QueryAllDelegationHistoryResponse {
   repeated DelegationHistory                      delegationHistory = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination        = 2;
+}
+
+message QueryGetUserInstructionsRequest {
+  string address = 1;
+}
+
+message QueryGetUserInstructionsResponse {
+  UserInstructions userInstructions = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllUserInstructionsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllUserInstructionsResponse {
+  repeated UserInstructions                       userInstructions = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination       = 2;
 }
 

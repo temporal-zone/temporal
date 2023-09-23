@@ -30,6 +30,14 @@ func TestGenesisState_Validate(t *testing.T) {
 						Address: "1",
 					},
 				},
+				UserInstructionsList: []types.UserInstructions{
+					{
+						Address: "0",
+					},
+					{
+						Address: "1",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -38,6 +46,20 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "duplicated delegationHistory",
 			genState: &types.GenesisState{
 				DelegationHistoryList: []types.DelegationHistory{
+					{
+						Address: "0",
+					},
+					{
+						Address: "0",
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated userInstructions",
+			genState: &types.GenesisState{
+				UserInstructionsList: []types.UserInstructions{
 					{
 						Address: "0",
 					},

@@ -5,6 +5,7 @@ package temporal.record;
 import "gogoproto/gogo.proto";
 import "temporal/record/params.proto";
 import "temporal/record/delegation_history.proto";
+import "temporal/record/user_instructions.proto";
 
 option go_package = "github.com/temporal-zone/temporal/x/record/types";
 
@@ -12,5 +13,6 @@ option go_package = "github.com/temporal-zone/temporal/x/record/types";
 message GenesisState {
            Params            params                = 1 [(gogoproto.nullable) = false];
   repeated DelegationHistory delegationHistoryList = 2 [(gogoproto.nullable) = false];
+  repeated UserInstructions  userInstructionsList  = 3 [(gogoproto.nullable) = false];
 }
 
