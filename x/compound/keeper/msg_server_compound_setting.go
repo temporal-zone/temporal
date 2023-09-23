@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkerr "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/temporal-zone/temporal/x/compound/types"
@@ -17,7 +18,7 @@ func (k msgServer) CreateCompoundSetting(goCtx context.Context, msg *types.MsgCr
 		msg.Delegator,
 	)
 	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "compoundSettings already set, do an update instead")
+		return nil, sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "compoundSettings already set, do an update instead")
 	}
 
 	err := k.ValidateValidatorSettings(ctx, msg.ValidatorSetting)
@@ -48,7 +49,7 @@ func (k msgServer) UpdateCompoundSetting(goCtx context.Context, msg *types.MsgUp
 		msg.Delegator,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "CompoundSettings not found, create them first")
+		return nil, sdkerr.Wrap(sdkerrors.ErrKeyNotFound, "CompoundSettings not found, create them first")
 	}
 
 	err := k.ValidateValidatorSettings(ctx, msg.ValidatorSetting)
@@ -58,7 +59,7 @@ func (k msgServer) UpdateCompoundSetting(goCtx context.Context, msg *types.MsgUp
 
 	// Checks if the msg delegator is the same as the current owner
 	if msg.Delegator != valFound.Delegator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, sdkerr.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	var compoundSetting = types.CompoundSetting{
@@ -82,12 +83,12 @@ func (k msgServer) DeleteCompoundSetting(goCtx context.Context, msg *types.MsgDe
 		msg.Delegator,
 	)
 	if !isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "CompoundSetting not found")
+		return nil, sdkerr.Wrap(sdkerrors.ErrKeyNotFound, "CompoundSetting not found")
 	}
 
 	// Checks if the msg delegator is the same as the current owner
 	if msg.Delegator != valFound.Delegator {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, sdkerr.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 
 	k.RemoveCompoundSetting(
@@ -98,22 +99,22 @@ func (k msgServer) DeleteCompoundSetting(goCtx context.Context, msg *types.MsgDe
 	return &types.MsgDeleteCompoundSettingResponse{}, nil
 }
 
-// validateValidatorSettings makes sure ValidatorSetting is valid
+// ValidateValidatorSettings makes sure ValidatorSetting is valid
 func (k msgServer) ValidateValidatorSettings(ctx sdk.Context, validatorSetting []*types.ValidatorSetting) error {
 	if validatorSetting == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validatorSetting can not be empty")
+		return sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "validatorSetting can not be empty")
 	}
 
 	totalPercentToCompound := uint64(0)
 	valoperAddresses := make([]string, len(validatorSetting))
 	for _, valSetting := range validatorSetting {
 		if valSetting.GetPercentToCompound() < 1 || valSetting.GetPercentToCompound() > 100 {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "percentToCompound can not be less than 1 or greater than 100")
+			return sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "percentToCompound can not be less than 1 or greater than 100")
 		}
 
 		totalPercentToCompound += valSetting.GetPercentToCompound()
 		if totalPercentToCompound < 1 || totalPercentToCompound > 100 {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "total percentToCompound across all ValidatorSetting can not be less than 1 or greater than 100")
+			return sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "total percentToCompound across all ValidatorSetting can not be less than 1 or greater than 100")
 		}
 
 		valAddress, err := sdk.ValAddressFromBech32(valSetting.ValidatorAddress)
@@ -123,11 +124,11 @@ func (k msgServer) ValidateValidatorSettings(ctx sdk.Context, validatorSetting [
 
 		_, found := k.stakingKeeper.GetValidator(ctx, valAddress)
 		if !found {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "can not find validator")
+			return sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "can not find validator")
 		}
 
 		if slices.Contains(valoperAddresses, valSetting.ValidatorAddress) {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator address can not be found in another validator setting")
+			return sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "validator address can not be found in another validator setting")
 		}
 		valoperAddresses = append(valoperAddresses, valSetting.ValidatorAddress)
 	}

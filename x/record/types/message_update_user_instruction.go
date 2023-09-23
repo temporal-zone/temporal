@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdkerr "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"time"
@@ -47,7 +48,7 @@ func (msg *MsgUpdateUserInstruction) GetSignBytes() []byte {
 func (msg *MsgUpdateUserInstruction) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.LocalAddress)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidAddress, "invalid local address (%s)", err)
 	}
 	return nil
 }

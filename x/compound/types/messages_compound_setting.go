@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdkerr "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -52,7 +53,7 @@ func (msg *MsgCreateCompoundSetting) GetSignBytes() []byte {
 func (msg *MsgCreateCompoundSetting) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Delegator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid delegator address (%s)", err)
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidAddress, "invalid delegator address (%s)", err)
 	}
 	return nil
 }
@@ -98,7 +99,7 @@ func (msg *MsgUpdateCompoundSetting) GetSignBytes() []byte {
 func (msg *MsgUpdateCompoundSetting) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Delegator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid delegator address (%s)", err)
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidAddress, "invalid delegator address (%s)", err)
 	}
 	return nil
 }
@@ -137,7 +138,7 @@ func (msg *MsgDeleteCompoundSetting) GetSignBytes() []byte {
 func (msg *MsgDeleteCompoundSetting) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Delegator)
 	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid delegator address (%s)", err)
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidAddress, "invalid delegator address (%s)", err)
 	}
 	return nil
 }
