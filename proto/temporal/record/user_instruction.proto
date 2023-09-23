@@ -2,16 +2,27 @@ syntax = "proto3";
 package temporal.record;
 
 option go_package = "github.com/temporal-zone/temporal/x/record/types";
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
 
 message UserInstruction {
-  
   string localAddress = 1; 
   string remoteAddress = 2; 
   string chainId = 3; 
-  int32 frequency = 4; 
-  string created = 5; 
-  string expires = 6; 
+  int64 frequency = 4;
+  google.protobuf.Timestamp created = 5 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
+  google.protobuf.Timestamp expires = 6 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
   string instruction = 7; 
-  int32 stratId = 8; 
-  string contractAddress = 9; 
+  int64 strategyId = 8 [
+    (gogoproto.nullable) = true
+  ];
+  string contractAddress = 9 [
+    (gogoproto.nullable) = true
+  ];
 }
