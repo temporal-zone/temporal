@@ -2,10 +2,10 @@ syntax = "proto3";
 package temporal.record;
 
 option go_package = "github.com/temporal-zone/temporal/x/record/types";
+import "temporal/record/user_instruction.proto";
 
 message UserInstructions {
   string address = 1; 
-  string userInstruction = 2; 
-  
+  repeated UserInstruction userInstruction = 2;
 }
 

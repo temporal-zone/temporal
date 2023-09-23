@@ -46883,7 +46883,32 @@ paths:
                     address:
                       type: string
                     userInstruction:
-                      type: string
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          localAddress:
+                            type: string
+                          remoteAddress:
+                            type: string
+                          chainId:
+                            type: string
+                          frequency:
+                            type: string
+                            format: int64
+                          created:
+                            type: string
+                            format: date-time
+                          expires:
+                            type: string
+                            format: date-time
+                          instruction:
+                            type: string
+                          strategyId:
+                            type: string
+                            format: int64
+                          contractAddress:
+                            type: string
               pagination:
                 type: object
                 properties:
@@ -47005,7 +47030,32 @@ paths:
                   address:
                     type: string
                   userInstruction:
-                    type: string
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        localAddress:
+                          type: string
+                        remoteAddress:
+                          type: string
+                        chainId:
+                          type: string
+                        frequency:
+                          type: string
+                          format: int64
+                        created:
+                          type: string
+                          format: date-time
+                        expires:
+                          type: string
+                          format: date-time
+                        instruction:
+                          type: string
+                        strategyId:
+                          type: string
+                          format: int64
+                        contractAddress:
+                          type: string
         default:
           description: An unexpected error response.
           schema:
@@ -76364,7 +76414,32 @@ definitions:
             address:
               type: string
             userInstruction:
-              type: string
+              type: array
+              items:
+                type: object
+                properties:
+                  localAddress:
+                    type: string
+                  remoteAddress:
+                    type: string
+                  chainId:
+                    type: string
+                  frequency:
+                    type: string
+                    format: int64
+                  created:
+                    type: string
+                    format: date-time
+                  expires:
+                    type: string
+                    format: date-time
+                  instruction:
+                    type: string
+                  strategyId:
+                    type: string
+                    format: int64
+                  contractAddress:
+                    type: string
       pagination:
         type: object
         properties:
@@ -76431,7 +76506,32 @@ definitions:
           address:
             type: string
           userInstruction:
-            type: string
+            type: array
+            items:
+              type: object
+              properties:
+                localAddress:
+                  type: string
+                remoteAddress:
+                  type: string
+                chainId:
+                  type: string
+                frequency:
+                  type: string
+                  format: int64
+                created:
+                  type: string
+                  format: date-time
+                expires:
+                  type: string
+                  format: date-time
+                instruction:
+                  type: string
+                strategyId:
+                  type: string
+                  format: int64
+                contractAddress:
+                  type: string
   temporal.record.QueryParamsResponse:
     type: object
     properties:
@@ -76439,10 +76539,60 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  temporal.record.UserInstruction:
+    type: object
+    properties:
+      localAddress:
+        type: string
+      remoteAddress:
+        type: string
+      chainId:
+        type: string
+      frequency:
+        type: string
+        format: int64
+      created:
+        type: string
+        format: date-time
+      expires:
+        type: string
+        format: date-time
+      instruction:
+        type: string
+      strategyId:
+        type: string
+        format: int64
+      contractAddress:
+        type: string
   temporal.record.UserInstructions:
     type: object
     properties:
       address:
         type: string
       userInstruction:
-        type: string
+        type: array
+        items:
+          type: object
+          properties:
+            localAddress:
+              type: string
+            remoteAddress:
+              type: string
+            chainId:
+              type: string
+            frequency:
+              type: string
+              format: int64
+            created:
+              type: string
+              format: date-time
+            expires:
+              type: string
+              format: date-time
+            instruction:
+              type: string
+            strategyId:
+              type: string
+              format: int64
+            contractAddress:
+              type: string
