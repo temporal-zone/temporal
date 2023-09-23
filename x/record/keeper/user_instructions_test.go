@@ -26,38 +26,26 @@ func createNUserInstructions(keeper *keeper.Keeper, ctx sdk.Context, n int) []ty
 }
 
 func TestUserInstructionsGet(t *testing.T) {
-	keeper, ctx := keepertest.RecordKeeper(t)
-	items := createNUserInstructions(keeper, ctx, 10)
+	k, ctx := keepertest.RecordKeeper(t)
+	items := createNUserInstructions(k, ctx, 10)
 	for _, item := range items {
-		rst, found := keeper.GetUserInstructions(ctx,
-			item.Address,
-		)
+		rst, found := k.GetUserInstructions(ctx, item.Address)
 		require.True(t, found)
-		require.Equal(t,
-			nullify.Fill(&item),
-			nullify.Fill(&rst),
-		)
+		require.Equal(t, nullify.Fill(&item), nullify.Fill(&rst))
 	}
 }
 func TestUserInstructionsRemove(t *testing.T) {
-	keeper, ctx := keepertest.RecordKeeper(t)
-	items := createNUserInstructions(keeper, ctx, 10)
+	k, ctx := keepertest.RecordKeeper(t)
+	items := createNUserInstructions(k, ctx, 10)
 	for _, item := range items {
-		keeper.RemoveUserInstructions(ctx,
-			item.Address,
-		)
-		_, found := keeper.GetUserInstructions(ctx,
-			item.Address,
-		)
+		k.RemoveUserInstructions(ctx, item.Address)
+		_, found := k.GetUserInstructions(ctx, item.Address)
 		require.False(t, found)
 	}
 }
 
 func TestUserInstructionsGetAll(t *testing.T) {
-	keeper, ctx := keepertest.RecordKeeper(t)
-	items := createNUserInstructions(keeper, ctx, 10)
-	require.ElementsMatch(t,
-		nullify.Fill(items),
-		nullify.Fill(keeper.GetAllUserInstructions(ctx)),
-	)
+	k, ctx := keepertest.RecordKeeper(t)
+	items := createNUserInstructions(k, ctx, 10)
+	require.ElementsMatch(t, nullify.Fill(items), nullify.Fill(k.GetAllUserInstructions(ctx)))
 }

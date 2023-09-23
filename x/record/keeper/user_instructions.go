@@ -10,22 +10,14 @@ import (
 func (k Keeper) SetUserInstructions(ctx sdk.Context, userInstructions types.UserInstructions) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.UserInstructionsKeyPrefix))
 	b := k.cdc.MustMarshal(&userInstructions)
-	store.Set(types.UserInstructionsKey(
-		userInstructions.Address,
-	), b)
+	store.Set(types.UserInstructionsKey(userInstructions.Address), b)
 }
 
 // GetUserInstructions returns a userInstructions from its index
-func (k Keeper) GetUserInstructions(
-	ctx sdk.Context,
-	address string,
-
-) (val types.UserInstructions, found bool) {
+func (k Keeper) GetUserInstructions(ctx sdk.Context, address string) (val types.UserInstructions, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.UserInstructionsKeyPrefix))
 
-	b := store.Get(types.UserInstructionsKey(
-		address,
-	))
+	b := store.Get(types.UserInstructionsKey(address))
 	if b == nil {
 		return val, false
 	}
@@ -35,15 +27,9 @@ func (k Keeper) GetUserInstructions(
 }
 
 // RemoveUserInstructions removes a userInstructions from the store
-func (k Keeper) RemoveUserInstructions(
-	ctx sdk.Context,
-	address string,
-
-) {
+func (k Keeper) RemoveUserInstructions(ctx sdk.Context, address string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.UserInstructionsKeyPrefix))
-	store.Delete(types.UserInstructionsKey(
-		address,
-	))
+	store.Delete(types.UserInstructionsKey(address))
 }
 
 // GetAllUserInstructions returns all userInstructions

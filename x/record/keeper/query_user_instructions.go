@@ -45,10 +45,7 @@ func (k Keeper) UserInstructions(goCtx context.Context, req *types.QueryGetUserI
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	val, found := k.GetUserInstructions(
-		ctx,
-		req.Address,
-	)
+	val, found := k.GetUserInstructions(ctx, req.Address)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
