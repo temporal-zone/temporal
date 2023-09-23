@@ -1,7 +1,51 @@
 syntax = "proto3";
+
 package temporal.record;
 
 option go_package = "github.com/temporal-zone/temporal/x/record/types";
 
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos_proto/cosmos.proto";
+
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+  rpc CreateUserInstruction (MsgCreateUserInstruction) returns (MsgCreateUserInstructionResponse);
+  rpc DeleteUserInstruction (MsgDeleteUserInstruction) returns (MsgDeleteUserInstructionResponse);
+  rpc UpdateUserInstruction (MsgUpdateUserInstruction) returns (MsgUpdateUserInstructionResponse);
+}
+message MsgCreateUserInstruction {
+  string                    localAddress    = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string                    remoteAddress   = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string                    chainId         = 3;
+  int64                     frequency       = 4;
+  google.protobuf.Timestamp expires         = 5 [(gogoproto.stdtime)   = true, (gogoproto.nullable) = false];
+  string                    instruction     = 6;
+  int64                     strategyId      = 7 [(gogoproto.nullable)  = true];
+  string                    contractAddress = 8 [(gogoproto.nullable)  = true];
+}
+
+message MsgCreateUserInstructionResponse {}
+
+message MsgDeleteUserInstruction {
+  string localAddress    = 1 [(cosmos_proto.scalar) = "cosmos.AddressString", (gogoproto.nullable)  = true];
+  string remoteAddress   = 2 [(cosmos_proto.scalar) = "cosmos.AddressString", (gogoproto.nullable)  = true];
+  string chainId         = 3 [(gogoproto.nullable)  = true];
+  string contractAddress = 4 [(gogoproto.nullable)  = true];
+}
+
+message MsgDeleteUserInstructionResponse {}
+
+message MsgUpdateUserInstruction {
+  string localAddress               = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string remoteAddress              = 2 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  string chainId                    = 3;
+  int64 frequency                   = 4;
+  google.protobuf.Timestamp expires = 5 [(gogoproto.stdtime)   = true, (gogoproto.nullable) = false];
+  string instruction                = 6;
+  int64  strategyId                 = 7 [(gogoproto.nullable)  = true];
+  string contractAddress            = 8 [(gogoproto.nullable)  = true];
+}
+
+message MsgUpdateUserInstructionResponse {}
+

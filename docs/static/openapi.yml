@@ -76341,6 +76341,12 @@ definitions:
 
           NOTE: The amount field is an Int which implements the custom method
           signatures required by gogoproto.
+  temporal.record.MsgCreateUserInstructionResponse:
+    type: object
+  temporal.record.MsgDeleteUserInstructionResponse:
+    type: object
+  temporal.record.MsgUpdateUserInstructionResponse:
+    type: object
   temporal.record.Params:
     type: object
     description: Params defines the parameters for the module.

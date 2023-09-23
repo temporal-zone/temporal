@@ -16,7 +16,7 @@ func (k Keeper) UserInstructionsAll(goCtx context.Context, req *types.QueryAllUs
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var userInstructionss []types.UserInstructions
+	var userInstructionsSlice []types.UserInstructions
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
@@ -28,7 +28,7 @@ func (k Keeper) UserInstructionsAll(goCtx context.Context, req *types.QueryAllUs
 			return err
 		}
 
-		userInstructionss = append(userInstructionss, userInstructions)
+		userInstructionsSlice = append(userInstructionsSlice, userInstructions)
 		return nil
 	})
 
@@ -36,7 +36,7 @@ func (k Keeper) UserInstructionsAll(goCtx context.Context, req *types.QueryAllUs
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllUserInstructionsResponse{UserInstructions: userInstructionss, Pagination: pageRes}, nil
+	return &types.QueryAllUserInstructionsResponse{UserInstructions: userInstructionsSlice, Pagination: pageRes}, nil
 }
 
 func (k Keeper) UserInstructions(goCtx context.Context, req *types.QueryGetUserInstructionsRequest) (*types.QueryGetUserInstructionsResponse, error) {
