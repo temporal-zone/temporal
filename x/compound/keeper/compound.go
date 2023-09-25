@@ -52,7 +52,7 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) (bool, e
 	}
 
 	// Get all active delegations
-	delegations, err := k.DelegationTotalRewards(ctx, address.String())
+	delegations, err := k.DelegationTotalRewards(ctx, address)
 	if err != nil {
 		return false, err
 	}
@@ -248,21 +248,12 @@ func (k Keeper) CalculateCompoundAmount(rewardAmount sdk.Coin, percentToCompound
 }
 
 // DelegationTotalRewards the total rewards accrued by each validator
-func (k Keeper) DelegationTotalRewards(ctx sdk.Context, delegator string) ([]distrTypes.DelegationDelegatorReward, error) {
-	if delegator == "" {
-		return nil, errors.New("empty delegator address")
-	}
-
+func (k Keeper) DelegationTotalRewards(ctx sdk.Context, delegator sdk.AccAddress) ([]distrTypes.DelegationDelegatorReward, error) {
 	total := sdk.DecCoins{}
 	var delRewards []distrTypes.DelegationDelegatorReward
 
-	delAdr, err := sdk.AccAddressFromBech32(delegator)
-	if err != nil {
-		return nil, err
-	}
-
 	k.stakingKeeper.IterateDelegations(
-		ctx, delAdr,
+		ctx, delegator,
 		func(_ int64, del stakingTypes.DelegationI) (stop bool) {
 			valAddr := del.GetValidatorAddr()
 			val := k.stakingKeeper.Validator(ctx, valAddr)
