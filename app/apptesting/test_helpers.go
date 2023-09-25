@@ -29,5 +29,17 @@ func SetupSuitelessTestHelper() SuitelessAppTestHelper {
 func GetRandomAddress() sdk.AccAddress {
 	pk := ed25519.GenPrivKey().PubKey()
 
+	bech32Prefix := "temporal"
+	accountPubKeyPrefix := bech32Prefix + "pub"
+	validatorAddressPrefix := bech32Prefix + "valoper"
+	validatorPubKeyPrefix := bech32Prefix + "valoperpub"
+	consNodeAddressPrefix := bech32Prefix + "valcons"
+	consNodePubKeyPrefix := bech32Prefix + "valconspub"
+
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(bech32Prefix, accountPubKeyPrefix)
+	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
+	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
+
 	return sdk.AccAddress(pk.Address())
 }

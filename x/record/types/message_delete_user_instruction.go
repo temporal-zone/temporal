@@ -45,5 +45,6 @@ func (msg *MsgDeleteUserInstruction) ValidateBasic() error {
 	if err != nil {
 		return sdkerr.Wrapf(sdkerrors.ErrInvalidAddress, "invalid local address (%s)", err)
 	}
+
 	return nil
 }

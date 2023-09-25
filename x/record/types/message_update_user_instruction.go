@@ -50,5 +50,40 @@ func (msg *MsgUpdateUserInstruction) ValidateBasic() error {
 	if err != nil {
 		return sdkerr.Wrapf(sdkerrors.ErrInvalidAddress, "invalid local address (%s)", err)
 	}
+
+	if msg.GetRemoteAddress() == "" {
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidAddress, "invalid remote address (%s)", msg.GetRemoteAddress())
+	}
+
+	addressesEqual, err := equalLocalRemoteAddress(msg.LocalAddress, msg.RemoteAddress)
+	if err != nil {
+		return err
+	}
+
+	if !addressesEqual {
+		return sdkerr.Wrapf(sdkerrors.ErrUnauthorized, "local address (%s) and remote address (%s) do not match", msg.GetLocalAddress(), msg.GetRemoteAddress())
+	}
+
+	if msg.GetChainId() == "" {
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidRequest, "chain id can not be empty (%s)", msg.GetChainId())
+	}
+
+	//TODO should this be a module param?
+	if msg.GetFrequency() < 3600 {
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidRequest, "frequency can not be less than 3600 (%d)", msg.GetFrequency())
+	}
+
+	if msg.GetExpires().IsZero() {
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidRequest, "expiry can not be zero (%s)", msg.GetExpires().String())
+	}
+
+	if msg.GetInstruction() == "" {
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidRequest, "instruction can not be empty (%s)", msg.GetInstruction())
+	}
+
+	if msg.GetStrategyId() == 0 && msg.GetContractAddress() == "" {
+		return sdkerr.Wrapf(sdkerrors.ErrInvalidRequest, "both strategy id and contract address can not be empty")
+	}
+
 	return nil
 }
