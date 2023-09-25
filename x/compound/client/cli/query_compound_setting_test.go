@@ -2,7 +2,7 @@ package cli_test
 
 import (
 	"fmt"
-	"github.com/temporal-zone/temporal/app/apptesting"
+	"github.com/temporal-zone/temporal/testutil/sample"
 	"strconv"
 	"testing"
 
@@ -28,7 +28,7 @@ func networkWithCompoundSettingObjects(t *testing.T, n int) (*network.Network, [
 	state := types.GenesisState{Params: types.DefaultParams()}
 	for i := 0; i < n; i++ {
 		compoundSetting := types.CompoundSetting{
-			Delegator: apptesting.GetRandomAddress().String(),
+			Delegator: sample.AccAddress(),
 		}
 		nullify.Fill(&compoundSetting)
 		state.CompoundSettingList = append(state.CompoundSettingList, compoundSetting)
