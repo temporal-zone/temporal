@@ -503,9 +503,9 @@ var (
 
 	pattern_Query_DelegationHistoryAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"temporal", "record", "delegation_history"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_UserInstructions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"temporal-zone", "temporal", "record", "user_instructions", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_UserInstructions_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"temporal", "record", "user_instructions", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_UserInstructionsAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"temporal-zone", "temporal", "record", "user_instructions"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_UserInstructionsAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"temporal", "record", "user_instructions"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

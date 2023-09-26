@@ -33,11 +33,11 @@ service Query {
   
   // Queries a list of UserInstructions items.
   rpc UserInstructions    (QueryGetUserInstructionsRequest) returns (QueryGetUserInstructionsResponse) {
-    option (google.api.http).get = "/temporal-zone/temporal/record/user_instructions/{address}";
+    option (google.api.http).get = "/temporal/record/user_instructions/{address}";
   
   }
   rpc UserInstructionsAll (QueryAllUserInstructionsRequest) returns (QueryAllUserInstructionsResponse) {
-    option (google.api.http).get = "/temporal-zone/temporal/record/user_instructions";
+    option (google.api.http).get = "/temporal/record/user_instructions";
   
   }
 }
