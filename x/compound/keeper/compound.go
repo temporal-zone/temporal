@@ -16,9 +16,6 @@ type StakingCompoundAction struct {
 	Balance          sdk.Coin
 }
 
-var VALIDATORS = make(map[string]sdk.ValAddress)
-var DELEGATORS = make(map[string]sdk.AccAddress)
-
 // RunCompounding gets all CompoundSettings and attempts to Compound them
 func (k Keeper) RunCompounding(ctx sdk.Context) {
 	numberOfCompoundsTemp := k.NumberOfCompoundsPerBlock(ctx)
@@ -49,7 +46,7 @@ func (k Keeper) RunCompounding(ctx sdk.Context) {
 }
 
 func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) (bool, error) {
-	address, err := GetAccAddress(cs.Delegator)
+	address, err := sdk.AccAddressFromBech32(cs.Delegator)
 	if err != nil {
 		return false, err
 	}
@@ -113,39 +110,9 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) (bool, e
 	return true, nil
 }
 
-func GetAccAddress(delegatorAddress string) (sdk.AccAddress, error) {
-	accAddr, found := DELEGATORS[delegatorAddress]
-	if !found {
-		var err error
-		accAddr, err = sdk.AccAddressFromBech32(delegatorAddress)
-		if err != nil {
-			return nil, err
-		}
-
-		DELEGATORS[delegatorAddress] = accAddr
-	}
-
-	return accAddr, nil
-}
-
-func GetValAddress(validatorAddress string) (sdk.ValAddress, error) {
-	valAddr, found := VALIDATORS[validatorAddress]
-	if !found {
-		var err error
-		valAddr, err = sdk.ValAddressFromBech32(validatorAddress)
-		if err != nil {
-			return nil, err
-		}
-
-		VALIDATORS[validatorAddress] = valAddr
-	}
-
-	return valAddr, nil
-}
-
 func (k Keeper) ClaimDelegationRewards(ctx sdk.Context, address sdk.AccAddress, delegations []distrTypes.DelegationDelegatorReward) error {
 	for _, delegation := range delegations {
-		valAddr, err := GetValAddress(delegation.ValidatorAddress)
+		valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
 		if err != nil {
 			return err
 		}
@@ -173,7 +140,7 @@ func (k Keeper) ShouldCompoundHappen(ctx sdk.Context, cs compTypes.CompoundSetti
 
 // Delegate is a helper method that delegates
 func Delegate(ctx sdk.Context, k Keeper, compoundAction StakingCompoundAction, address sdk.AccAddress) error {
-	valAddr, err := GetValAddress(compoundAction.ValidatorAddress)
+	valAddr, err := sdk.ValAddressFromBech32(compoundAction.ValidatorAddress)
 	if err != nil {
 		return err
 	}
