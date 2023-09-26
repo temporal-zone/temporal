@@ -3,7 +3,6 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	"errors"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	distrTypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingTypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -19,10 +18,6 @@ type StakingCompoundAction struct {
 
 var VALIDATORS = make(map[string]sdk.ValAddress)
 var DELEGATORS = make(map[string]sdk.AccAddress)
-
-func init() {
-	fmt.Println("Compound init")
-}
 
 // RunCompounding gets all CompoundSettings and attempts to Compound them
 func (k Keeper) RunCompounding(ctx sdk.Context) {
