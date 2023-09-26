@@ -3,6 +3,7 @@ package keeper
 import (
 	"cosmossdk.io/math"
 	"errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	distrTypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	stakingTypes "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -14,6 +15,13 @@ type StakingCompoundAction struct {
 	Delegator        string
 	ValidatorAddress string
 	Balance          sdk.Coin
+}
+
+var VALIDATORS = make(map[string]sdk.ValAddress)
+var DELEGATORS = make(map[string]sdk.AccAddress)
+
+func init() {
+	fmt.Println("Compound init")
 }
 
 // RunCompounding gets all CompoundSettings and attempts to Compound them
@@ -46,7 +54,7 @@ func (k Keeper) RunCompounding(ctx sdk.Context) {
 }
 
 func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) (bool, error) {
-	address, err := sdk.AccAddressFromBech32(cs.Delegator)
+	address, err := GetAccAddress(cs.Delegator)
 	if err != nil {
 		return false, err
 	}
@@ -92,17 +100,7 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) (bool, e
 	// compounded to a single validator and the compounding amount is greater than the sum of the staking reward being
 	// claimed on the delegate and the wallet balance, a panic will occur as the network will try to delegate more than
 	// the account has available to be delegated.
-	for _, delegation := range delegations {
-		valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
-		if err != nil {
-			return false, err
-		}
-
-		_, err = k.distrKeeper.WithdrawDelegationRewards(ctx, address, valAddr)
-		if err != nil {
-			return false, err
-		}
-	}
+	err = k.ClaimDelegationRewards(ctx, address, delegations)
 
 	// Change withdraw address back to what it was
 	if !withdrawAddr.Equals(address) {
@@ -120,6 +118,52 @@ func (k Keeper) Compound(ctx sdk.Context, cs compTypes.CompoundSetting) (bool, e
 	return true, nil
 }
 
+func GetAccAddress(delegatorAddress string) (sdk.AccAddress, error) {
+	accAddr, found := DELEGATORS[delegatorAddress]
+	if !found {
+		var err error
+		accAddr, err = sdk.AccAddressFromBech32(delegatorAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		DELEGATORS[delegatorAddress] = accAddr
+	}
+
+	return accAddr, nil
+}
+
+func GetValAddress(validatorAddress string) (sdk.ValAddress, error) {
+	valAddr, found := VALIDATORS[validatorAddress]
+	if !found {
+		var err error
+		valAddr, err = sdk.ValAddressFromBech32(validatorAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		VALIDATORS[validatorAddress] = valAddr
+	}
+
+	return valAddr, nil
+}
+
+func (k Keeper) ClaimDelegationRewards(ctx sdk.Context, address sdk.AccAddress, delegations []distrTypes.DelegationDelegatorReward) error {
+	for _, delegation := range delegations {
+		valAddr, err := GetValAddress(delegation.ValidatorAddress)
+		if err != nil {
+			return err
+		}
+
+		_, err = k.distrKeeper.WithdrawDelegationRewards(ctx, address, valAddr)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ShouldCompoundHappen compares the last time a compounding happened
 func (k Keeper) ShouldCompoundHappen(ctx sdk.Context, cs compTypes.CompoundSetting) bool {
 	previousCompound, found := k.GetPreviousCompound(ctx, cs.Delegator)
@@ -134,7 +178,7 @@ func (k Keeper) ShouldCompoundHappen(ctx sdk.Context, cs compTypes.CompoundSetti
 
 // Delegate is a helper method that delegates
 func Delegate(ctx sdk.Context, k Keeper, compoundAction StakingCompoundAction, address sdk.AccAddress) error {
-	valAddr, err := sdk.ValAddressFromBech32(compoundAction.ValidatorAddress)
+	valAddr, err := GetValAddress(compoundAction.ValidatorAddress)
 	if err != nil {
 		return err
 	}
