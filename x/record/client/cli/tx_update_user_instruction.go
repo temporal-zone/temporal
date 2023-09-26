@@ -18,7 +18,7 @@ func CmdUpdateUserInstruction() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-user-instruction [remote-address] [chain-id] [frequency] [expires] [instruction] [strategy-id] [contract-address]",
 		Short: "Broadcast message UpdateUserInstruction",
-		Args:  cobra.ExactArgs(8),
+		Args:  cobra.ExactArgs(7),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argRemoteAddress := args[0]
 

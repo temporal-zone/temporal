@@ -18,7 +18,7 @@ func CmdCreateUserInstruction() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-user-instruction [remote-address] [chain-id] [frequency] [expires] [instructions] [strategy-id] [contract-address]",
 		Short: "Broadcast message CreateUserInstruction",
-		Args:  cobra.ExactArgs(0),
+		Args:  cobra.ExactArgs(7),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
