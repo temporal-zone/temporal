@@ -15,11 +15,6 @@ import (
 func (k msgServer) DeleteUserInstruction(goCtx context.Context, msg *types.MsgDeleteUserInstruction) (*types.MsgDeleteUserInstructionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO remove at next upgrade
-	if ctx.BlockHeight() < 235000 {
-		return nil, sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "msg will be usable at height 235000")
-	}
-
 	val, found := k.GetUserInstructions(ctx, msg.LocalAddress)
 	if !found {
 		return nil, sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "nothing to delete, user instructions not found")
