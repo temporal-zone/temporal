@@ -13,6 +13,11 @@ import (
 func (k msgServer) UpdateUserInstruction(goCtx context.Context, msg *types.MsgUpdateUserInstruction) (*types.MsgUpdateUserInstructionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// TODO remove at next upgrade
+	if ctx.BlockHeight() < 235000 {
+		return nil, sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "msg will be usable at height 235000")
+	}
+
 	if msg.Expires.Before(ctx.BlockTime()) {
 		return nil, sdkerr.Wrap(sdkerrors.ErrInvalidRequest, "expiry is before now")
 	}
